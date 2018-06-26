@@ -1,0 +1,25 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Wohngebäude Metadata</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <script src="assets/js/jquery-3.3.1.min.js"></script>
+    <script src="assets/js/snap.svg-min.js"></script>
+</head>
+<body>
+    <main>            
+        <button class="save" onclick="saveSvgAsPng(document.querySelector('.svg'), 'grundriss.png', {backgroundColor: '#fff', encoderOptions: 1});">Save as PNG</button>
+        <button class="door">Türmodus</button>
+
+        <div class="svg-wrapper">        
+            <svg class="svg" xmlns="http://www.w3.org/2000/svg"></svg>
+        </div>
+        <ul class="list"></ul>
+    </main>
+
+    <script src="assets/js/app.js"></script>
+	<script src="node_modules/save-svg-as-png/lib/saveSvgAsPng.js"></script>
+</body>
+</html>

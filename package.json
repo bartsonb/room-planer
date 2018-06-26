@@ -1,0 +1,14 @@
+{
+  "name": "webdev-01-project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Armin Bartnik <armin.bartnik@gmail.com> (http://www.arminbartnik.de/)",
+  "license": "ISC",
+  "dependencies": {
+    "save-svg-as-png": "^1.4.5"
+  }
+}
