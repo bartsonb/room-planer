@@ -1,23 +1,26 @@
 // DOM
-var DOM = {
+let DOM = {
 	wrapper: document.querySelector('.svg-wrapper'),
 	svg: document.querySelector('.svg'), 
-	buttonDoor: document.querySelector('.door')
+	buttonRoom: document.querySelector('#room-tool'),
+	buttonDoor: document.querySelector('#door-tool')
 };
 
 
 // GLOBALS
-var snap = Snap('.svg');
+let snap = Snap('.svg');
 
-var gridSize = 20;
-var mode = "idle";
+let gridSize = 20;
+let mode;
 
-var pointerCircle = snap.ellipse(-50, -50, 2.5, 2.5).attr({class: 'pointer'});
-var previewRectangle = snap.rect(-50, -50, gridSize, gridSize).attr({class: 'preview'});
+let rooms = [];
 
-var pos = {	x: undefined, y: undefined };
+let pointerCircle;
+let previewRectangle;
 
-var points = {
+let pos = {	x: undefined, y: undefined };
+
+let rectangle = {
 	p1: { x: undefined, y: undefined },
 	p2: { x: undefined, y: undefined }
 };
@@ -26,11 +29,30 @@ var points = {
 // EVENT HANDLER
 DOM.svg.addEventListener('mousemove', moveHandler);
 DOM.svg.addEventListener('mousemove', livePreview);
+
 DOM.svg.addEventListener('mousedown', mouseDownHandler);
 DOM.svg.addEventListener('mouseup', mouseUpHandler);
 
 
 // FUNCTIONS
+(function init() {
+	// drawing grid
+	let width = DOM.svg.getBoundingClientRect().width;
+	let height = DOM.svg.getBoundingClientRect().height;
+
+	let group = snap.g().attr({class: 'lines'});
+	for (let i = gridSize; i <= width; i += gridSize) {
+		group.add(snap.line(i, 0, i, height).attr({ stroke: '#efefef'}));
+		group.add(snap.line(0, i, width, i).attr({ stroke: '#efefef'}));
+	}
+
+	// previewRectangle
+	previewRectangle = snap.rect(-50, -50, gridSize, gridSize).attr({class: 'preview'});
+
+	// pointerCircle
+	pointerCircle = snap.ellipse(-50, -50, 2.5, 2.5).attr({class: 'pointer'})
+})();
+
 function moveHandler(event) {
 	// substracting the coordinates of the svg element from the coordinates of the mouse click event.
 	// position gets rounded up to a mutltiple of 20 to fit the grid size
@@ -38,8 +60,8 @@ function moveHandler(event) {
 	pos.y = Math.round( (event.y - this.getBoundingClientRect().y) / gridSize) * gridSize;
 
 	if (mode === "drawing") {
-		points.p2.x = pos.x;
-		points.p2.y = pos.y;
+		rectangle.p2.x = pos.x;
+		rectangle.p2.y = pos.y;
 	}
 
 	// updating position of the pointercircle
@@ -48,22 +70,22 @@ function moveHandler(event) {
 
 function livePreview() {
 	if (mode === "drawing") {
-		if (isValidRectangle(points)) {
+		if (isValidRectangle(rectangle)) {
 			// top left -> bottom right
-			if (points.p1.x < points.p2.x && points.p1.y < points.p2.y) {
-				previewRectangle.attr({ x: points.p1.x, y: points.p1.y, width: points.p2.x - points.p1.x, height: points.p2.y - points.p1.y });
+			if (rectangle.p1.x < rectangle.p2.x && rectangle.p1.y < rectangle.p2.y) {
+				previewRectangle.attr({ x: rectangle.p1.x, y: rectangle.p1.y, width: rectangle.p2.x - rectangle.p1.x, height: rectangle.p2.y - rectangle.p1.y });
 			}
 			// bottom right -> top left
-			if (points.p1.x > points.p2.x && points.p1.y > points.p2.y) {
-				previewRectangle.attr({ x: points.p2.x, y: points.p2.y, width: points.p1.x - points.p2.x, height: points.p1.y - points.p2.y });
+			if (rectangle.p1.x > rectangle.p2.x && rectangle.p1.y > rectangle.p2.y) {
+				previewRectangle.attr({ x: rectangle.p2.x, y: rectangle.p2.y, width: rectangle.p1.x - rectangle.p2.x, height: rectangle.p1.y - rectangle.p2.y });
 			}
 			// top right -> bottom left
-			if (points.p1.x > points.p2.x && points.p1.y < points.p2.y) {
-				previewRectangle.attr({ x: points.p2.x, y: points.p1.y, width: points.p1.x - points.p2.x, height: points.p2.y - points.p1.y });
+			if (rectangle.p1.x > rectangle.p2.x && rectangle.p1.y < rectangle.p2.y) {
+				previewRectangle.attr({ x: rectangle.p2.x, y: rectangle.p1.y, width: rectangle.p1.x - rectangle.p2.x, height: rectangle.p2.y - rectangle.p1.y });
 			}
 			// bottom left -> top right
-			if (points.p1.x < points.p2.x && points.p1.y > points.p2.y) {
-				previewRectangle.attr({ x: points.p1.x, y: points.p2.y, width: points.p2.x - points.p1.x, height: points.p1.y - points.p2.y });
+			if (rectangle.p1.x < rectangle.p2.x && rectangle.p1.y > rectangle.p2.y) {
+				previewRectangle.attr({ x: rectangle.p1.x, y: rectangle.p2.y, width: rectangle.p2.x - rectangle.p1.x, height: rectangle.p1.y - rectangle.p2.y });
 			}
 		} else {
 			previewRectangle.attr({ x: -500, y: -500 });
@@ -84,41 +106,56 @@ function mouseUpHandler(event) {
 function drawRectangle(action, pos) {
 	if (action === "start") {
 		mode = "drawing";
-		points.p1.x = pos.x;
-		points.p1.y = pos.y;
+		rectangle.p1.x = pos.x;
+		rectangle.p1.y = pos.y;
 	}
 
 	if (action === "stop") {
 		mode = "idle";
-		points.p2.x = pos.x;
-		points.p2.y = pos.y;
+		rectangle.p2.x = pos.x;
+		rectangle.p2.y = pos.y;
 
 		// mode the rectangle
-		if ( isValidRectangle(points) ) {
-			comparePoints(points, snap.rect());
-			if (points.p1.x < points.p2.x && points.p1.y < points.p2.y) {
-				var desc = window.prompt("Zweck des Zimmers?");
-				var size = (points.p2.x - points.p1.x) * (points.p2.y - points.p1.y) / 400;
+		if ( isValidRectangle(rectangle) ) {
+			if (rectangle.p1.x < rectangle.p2.x && rectangle.p1.y < rectangle.p2.y) {
+				let desc = window.prompt("Zweck des Zimmers?");
+				let size = (rectangle.p2.x - rectangle.p1.x) * (rectangle.p2.y - rectangle.p1.y) / 400;
 
-				var roomElement = snap.rect(points.p1.x, points.p1.y, points.p2.x - points.p1.x, points.p2.y - points.p1.y).attr({class: 'room'});
-				var descElement = snap.text(points.p1.x + 3, points.p1.y + 15, desc).attr({class: 'desc'});
-				var sizeElement = snap.text(points.p1.x + 3, points.p1.y + 30, size + "qm").attr({class: 'size'});
+				let roomElement = snap.rect(rectangle.p1.x, rectangle.p1.y, rectangle.p2.x - rectangle.p1.x, rectangle.p2.y - rectangle.p1.y).attr({class: 'room'});
+				let descElement = snap.text(rectangle.p1.x + 5, rectangle.p1.y + 15, desc).attr({class: 'desc'});
+				let sizeElement = snap.text(rectangle.p1.x + 5, rectangle.p1.y + 30, size + "qm").attr({class: 'size'});
 
-				snap.g(roomElement, descElement, sizeElement).attr({id: rectangles.length});
+				let group = snap.g(roomElement, descElement, sizeElement).attr({id: rooms.length});
+				group.node.addEventListener('click', function() {
+					if ( isEdge(rooms[this.id].points, pos) ) {
+						addDoor(pos);
+					}
+				});
+
+				// pusing deep copy of rectangle into rooms array
+				rooms.push({usage: desc, points: JSON.parse(JSON.stringify(rectangle))});
 			}
-			if (points.p1.x > points.p2.x && points.p1.y > points.p2.y) {
-				snap.rect(points.p2.x, points.p2.y, points.p1.x - points.p2.x, points.p1.y - points.p2.y).addClass('room');
+			if (rectangle.p1.x > rectangle.p2.x && rectangle.p1.y > rectangle.p2.y) {
+				snap.rect(rectangle.p2.x, rectangle.p2.y, rectangle.p1.x - rectangle.p2.x, rectangle.p1.y - rectangle.p2.y).addClass('room');
 			}
-			if (points.p1.x > points.p2.x && points.p1.y < points.p2.y) {
-				snap.rect(points.p2.x, points.p1.y, points.p1.x - points.p2.x, points.p2.y - points.p1.y).addClass('room');
+			if (rectangle.p1.x > rectangle.p2.x && rectangle.p1.y < rectangle.p2.y) {
+				snap.rect(rectangle.p2.x, rectangle.p1.y, rectangle.p1.x - rectangle.p2.x, rectangle.p2.y - rectangle.p1.y).addClass('room');
 			}
-			if (points.p1.x < points.p2.x && points.p1.y > points.p2.y) {
-				snap.rect(points.p1.x, points.p2.y, points.p2.x - points.p1.x, points.p1.y - points.p2.y).addClass('room');
+			if (rectangle.p1.x < rectangle.p2.x && rectangle.p1.y > rectangle.p2.y) {
+				snap.rect(rectangle.p1.x, rectangle.p2.y, rectangle.p2.x - rectangle.p1.x, rectangle.p1.y - rectangle.p2.y).addClass('room');
 			}
 		}
 	}
 }
 
-function isValidRectangle(points) {
-	return points.p1.x !== points.p2.x || points.p1.y !== points.p2.y;
+function addDoor(pos) {
+	snap.rect(pos.x - gridSize / 4, pos.y - gridSize / 4, 10, 10).attr({class: 'door'});
+}
+
+function isEdge(rectangle, pos) {
+	return rectangle.p1.x === pos.x || rectangle.p1.y === pos.y || rectangle.p2.x === pos.x || rectangle.p2.y === pos.y;
+}
+
+function isValidRectangle(rectangle) {
+	return rectangle.p1.x !== rectangle.p2.x || rectangle.p1.y !== rectangle.p2.y;
 }

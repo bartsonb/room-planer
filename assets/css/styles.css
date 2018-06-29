@@ -43,11 +43,12 @@ button {
 
 button:hover { color: dodgerblue; border-color: dodgerblue; }
 
+.buttons { }
+.toolbar { margin: 15px 0; }
+
 .svg-wrapper {
 	width: 100%;
 	height: 500px;
-    background: url('../img/grid.png') repeat 1px 1px;
-    margin: 15px 0 0 0;
 }
 
 .svg {
@@ -63,11 +64,11 @@ button:hover { color: dodgerblue; border-color: dodgerblue; }
 .svg:hover circle { display: block; }
 .svg:hover ellipse { display: block; }
 
-.svg .room { position: relative; fill: #efefef; stroke: #777; stroke-width: 1px; }
+.svg .room { position: relative; fill: rgba(255, 255, 255, 0.2); stroke: #222; stroke-width: 2px; }
 
 .svg .desc { font-size: 13px; font-weight: bold; }
 .svg .size { font-size: 13px; }
-.svg .preview { fill: rgba(0, 0, 0, 0.2); stroke: #555; stroke-width: 1px; }
+.svg .preview { fill: rgba(0, 0, 0, 0.2); stroke: #555; stroke-width: 2px; }
 
 .svg .temp-handle { fill: red }
 .svg .perm-handle { fill: white; stroke-width: 1px; stroke: #888; }
