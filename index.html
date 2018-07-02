@@ -1,37 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Wohngebäude Metadata</title>
-    <link rel="stylesheet" href="assets/css/styles.css">
-    <script src="assets/js/jquery-3.3.1.min.js"></script>
-    <script src="assets/js/snap.svg-min.js"></script>
+    <link rel="stylesheet" href="dest/css/styles.css">
+    <script src="dest/js/jquery-3.3.1.min.js"></script>
+    <script src="dest/js/snap.svg-min.js"></script>
 </head>
+
 <body>
     <main>
-            <div class="buttons">
-                <button class="save"
-                                onclick="saveSvgAsPng(document.querySelector('.svg'), 'grundriss.png', {backgroundColor: '#fff', encoderOptions: 1});">
-                    Save as PNG
-                </button>
-            </div>
-                <div class="toolbar">
-                    <input type="radio" id="room-tool" name="tool" value="Room Tool" checked />
-                    <label for="room-tool">Room Tool</label>
-                    <input type="radio" id="door-tool" name="tool" value="Door Tool" />
-                    <label for="door-tool">Door Tool</label>
-                    <input type="radio" id="window-tool" name="tool" value="Window Tool" />
-                    <label for="window-tool">Window Tool</label>
-                </div>
-        <div class="svg-wrapper">        
+        <div class="toolbar">
+            <input type="radio" id="room-tool" name="tool" value="Room Tool" checked />
+            <label for="room-tool">Room Tool</label>
+            <input type="radio" id="door-tool" name="tool" value="Door Tool" />
+            <label for="door-tool">Door Tool</label>
+            <input type="radio" id="window-tool" name="tool" value="Window Tool" />
+            <label for="window-tool">Window Tool</label>
+            <input type="radio" id="delete-tool" name="tool" value="Delete Tool" />
+            <label for="delete-tool">Delete Tool</label>
+        </div>
+        <div class="svg-wrapper">
             <svg class="svg" xmlns="http://www.w3.org/2000/svg"></svg>
         </div>
-        <ul class="list"></ul>
     </main>
 
-    <script src="assets/js/app.js"></script>
-    <script src="node_modules/save-svg-as-png/lib/saveSvgAsPng.js"></script>
+    <script src="dest/js/app.js"></script>
 </body>
+
 </html>

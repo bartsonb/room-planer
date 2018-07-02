@@ -2,9 +2,13 @@
 let DOM = {
 	wrapper: document.querySelector('.svg-wrapper'),
 	svg: document.querySelector('.svg'),
-	buttonRoom: document.querySelector('#room-tool'),
-	buttonDoor: document.querySelector('#door-tool'),
-	buttonWindow: document.querySelector('#window-tool')
+	button: {
+		room: document.querySelector('#room-tool'),
+		door: document.querySelector('#door-tool'),
+		window: document.querySelector('#delete-tool'),
+		delete: document.querySelector('#delete-tool')
+	}
+
 };
 
 
@@ -36,6 +40,12 @@ let rectangle = {
 	p2: {
 		x: undefined,
 		y: undefined
+	},
+	width: function() {
+		return Math.abs(this.p2.x - this.p1.x);
+	},
+	height: function() {
+		return Math.abs(this.p2.y - this.p1.y);
 	}
 };
 
@@ -49,8 +59,8 @@ DOM.svg.addEventListener('mouseup', mouseUpHandler);
 
 DOM.svg.addEventListener('click', clickHandler);
 
-[DOM.buttonRoom, DOM.buttonDoor, DOM.buttonWindow].forEach(button => {
-	button.addEventListener('click', buttonHandler)
+Object.keys(DOM.button).forEach( key => {
+	DOM.button[key].addEventListener('click', buttonHandler);
 });
 
 
@@ -60,33 +70,23 @@ DOM.svg.addEventListener('click', clickHandler);
 	mode = "idle";
 
 	// set tool 
-	DOM.buttonRoom.checked ? tool = "room" : tool = "door";
+	if ( DOM.button.room.checked ) { tool = "room" };
 
 	// drawing grid
 	let width = DOM.svg.getBoundingClientRect().width;
 	let height = DOM.svg.getBoundingClientRect().height;
 
-	let group = snap.g().attr({
-		class: 'lines'
-	});
+	let group = snap.g().attr({	class: 'lines' });
 	for (let i = gridSize; i <= width; i += gridSize) {
-		group.add(snap.line(i, 0, i, height).attr({
-			stroke: '#efefef'
-		}));
-		group.add(snap.line(0, i, width, i).attr({
-			stroke: '#efefef'
-		}));
+		group.add(snap.line(i, 0, i, height).attr({	stroke: '#efefef' }));
+		group.add(snap.line(0, i, width, i).attr({ stroke: '#efefef' }));
 	}
 
 	// previewRectangle
-	previewRectangle = snap.rect(-50, -50, gridSize, gridSize).attr({
-		class: 'preview'
-	});
+	previewRectangle = snap.rect(-50, -50, gridSize, gridSize).attr({ class: 'preview' });
 
 	// pointerCircle
-	pointerCircle = snap.ellipse(-50, -50, 2.5, 2.5).attr({
-		class: 'pointer'
-	})
+	pointerCircle = snap.ellipse(-50, -50, 2.5, 2.5).attr({ class: 'pointer' });
 })();
 
 function buttonHandler(event) {
@@ -96,18 +96,14 @@ function buttonHandler(event) {
 
 function clickHandler() {
 	if (tool === "door") {
-		if (rooms.length > 0) {
-			rooms.forEach(room => {
-				if (isEdge(room, pos) === "vertical") {
-					room.doors += 1;
-					addDoor(pos, "vertical");
-				}
-				if (isEdge(room, pos) === "horizontal") {
-					room.doors += 1;
-					addDoor(pos, "horizontal");
-				}
-			});
-		}
+		rooms.forEach(room => {
+			if (isSide(room, pos) === "vertical") { addDoor(pos, room, "vertical") }
+			if (isSide(room, pos) === "horizontal") { addDoor(pos, room, "horizontal") }
+		});
+	}
+
+	if (tool === "window") {
+		// TODO: windowfunction
 	}
 }
 
@@ -123,10 +119,7 @@ function moveHandler(event) {
 	}
 
 	// updating position of the pointercircle
-	pointerCircle.attr({
-		cx: pos.x,
-		cy: pos.y
-	});
+	pointerCircle.attr({ cx: pos.x, cy: pos.y });
 }
 
 function livePreview() {
@@ -241,24 +234,15 @@ function drawRectangle(action, pos) {
 	}
 }
 
-function addDoor(pos, rotation) {
-	rotation === "vertical" && snap.rect(pos.x - 5, pos.y - 3, 10, 6).attr({
-		class: 'door'
-	});
-	rotation === "horizontal" && snap.rect(pos.x - 5, pos.y - 3, 10, 6).attr({
-		class: 'door'
-	}).transform('r90');
+function addDoor(pos, room, rotation) {
+	if (rotation === "vertical") { room.doors += 1; snap.rect(pos.x - 5, pos.y - 3, 10, 6).attr({ class: 'door' }); }
+	if (rotation === "horizontal") { room.doors += 1; snap.rect(pos.x - 5, pos.y - 3, 10, 6).attr({ class: 'door' }).transform('r90'); }
 
 }
 
-function isEdge(room, pos) {
-	if (room.p1.x === pos.x || room.p2.x === pos.x) {
-		return "vertical";
-	}
-
-	if (room.p1.y === pos.y || room.p2.y === pos.y) {
-		return "horizontal";
-	}
+function isSide(room, pos) {
+	if (room.p1.x === pos.x || room.p2.x === pos.x) { return "vertical" }
+	if (room.p1.y === pos.y || room.p2.y === pos.y) { return "horizontal"; }
 
 	return false;
 }
