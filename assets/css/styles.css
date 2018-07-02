@@ -46,6 +46,8 @@ button:hover { color: dodgerblue; border-color: dodgerblue; }
 .buttons { }
 .toolbar { margin: 15px 0; }
 
+label { margin: 0 15px 0 0; }
+
 .svg-wrapper {
 	width: 100%;
 	height: 500px;
