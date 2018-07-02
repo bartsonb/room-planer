@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -10,19 +11,19 @@
 </head>
 <body>
     <main>
-			<div class="buttons">
-				<button class="save"
-								onclick="saveSvgAsPng(document.querySelector('.svg'), 'grundriss.png', {backgroundColor: '#fff', encoderOptions: 1});">
-					Save as PNG
-				</button>
-				<button class="door">Türmodus</button>
-			</div>
-				<div class="toolbar">
-					<input type="radio" id="room-tool" name="tool" value="Room Tool" checked />
-					<label for="room-tool"> Room Tool</label>
-					<input type="radio" id="door-tool" name="tool" value="Door Tool" />
-					<label for="door-tool"> Door Tool</label>
-				</div>
+            <div class="buttons">
+                <button class="save"
+                                onclick="saveSvgAsPng(document.querySelector('.svg'), 'grundriss.png', {backgroundColor: '#fff', encoderOptions: 1});">
+                    Save as PNG
+                </button>
+                <button class="door">Türmodus</button>
+            </div>
+                <div class="toolbar">
+                    <input type="radio" id="room-tool" name="tool" value="Room Tool" checked />
+                    <label for="room-tool"> Room Tool</label>
+                    <input type="radio" id="door-tool" name="tool" value="Door Tool" />
+                    <label for="door-tool"> Door Tool</label>
+                </div>
         <div class="svg-wrapper">        
             <svg class="svg" xmlns="http://www.w3.org/2000/svg"></svg>
         </div>
@@ -30,6 +31,6 @@
     </main>
 
     <script src="assets/js/app.js"></script>
-	<script src="node_modules/save-svg-as-png/lib/saveSvgAsPng.js"></script>
+    <script src="node_modules/save-svg-as-png/lib/saveSvgAsPng.js"></script>
 </body>
 </html>
