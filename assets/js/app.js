@@ -21,8 +21,17 @@ let previewRectangle;
 let pos = {	x: undefined, y: undefined };
 
 let rectangle = {
-	p1: { x: undefined, y: undefined },
-	p2: { x: undefined, y: undefined }
+	doors: 0,
+	windows: 0,
+	usage: undefined,
+	p1: { 
+		x: undefined, 
+		y: undefined 
+	},
+	p2: { 
+		x: undefined, 
+		y: undefined 
+	}
 };
 
 
@@ -32,6 +41,8 @@ DOM.svg.addEventListener('mousemove', livePreview);
 
 DOM.svg.addEventListener('mousedown', mouseDownHandler);
 DOM.svg.addEventListener('mouseup', mouseUpHandler);
+
+DOM.svg.addEventListener('click', clickHandler);
 
 
 // FUNCTIONS
@@ -52,6 +63,21 @@ DOM.svg.addEventListener('mouseup', mouseUpHandler);
 	// pointerCircle
 	pointerCircle = snap.ellipse(-50, -50, 2.5, 2.5).attr({class: 'pointer'})
 })();
+
+function clickHandler() {
+	if ( event.target.getAttribute('class') === "room" && rooms.length > 0 ) {
+		rooms.forEach( room => {
+			if ( isEdge(room, pos) === "vertical" ) {
+				room.doors += 1;
+				addDoor(pos, "vertical");
+			}
+			if ( isEdge(room, pos) === "horizontal" ) {
+				room.doors += 1;
+				addDoor(pos, "horizontal");
+			}
+		});
+	}
+}
 
 function moveHandler(event) {
 	// substracting the coordinates of the svg element from the coordinates of the mouse click event.
@@ -126,14 +152,10 @@ function drawRectangle(action, pos) {
 				let sizeElement = snap.text(rectangle.p1.x + 5, rectangle.p1.y + 30, size + "qm").attr({class: 'size'});
 
 				let group = snap.g(roomElement, descElement, sizeElement).attr({id: rooms.length});
-				group.node.addEventListener('click', function() {
-					if ( isEdge(rooms[this.id].points, pos) ) {
-						addDoor(pos);
-					}
-				});
 
+				rectangle.usage = desc;
 				// pusing deep copy of rectangle into rooms array
-				rooms.push({usage: desc, points: JSON.parse(JSON.stringify(rectangle))});
+				rooms.push(JSON.parse(JSON.stringify(rectangle)));
 			}
 			if (rectangle.p1.x > rectangle.p2.x && rectangle.p1.y > rectangle.p2.y) {
 				snap.rect(rectangle.p2.x, rectangle.p2.y, rectangle.p1.x - rectangle.p2.x, rectangle.p1.y - rectangle.p2.y).addClass('room');
@@ -148,12 +170,21 @@ function drawRectangle(action, pos) {
 	}
 }
 
-function addDoor(pos) {
-	snap.rect(pos.x - gridSize / 4, pos.y - gridSize / 4, 10, 10).attr({class: 'door'});
+function addDoor(pos, rotation) {
+	rotation === "vertical" && snap.rect(pos.x - gridSize / 4, pos.y - gridSize / 4, 10, 10).attr({class: 'door'}).transform( 'r45,' +pos.x + "," +pos.y );
+	rotation === "horizontal" && snap.rect(pos.x - gridSize / 4, pos.y - gridSize / 4, 10, 10).attr({class: 'door'}).transform( 'r45,' +pos.x + "," +pos.y );
 }
 
-function isEdge(rectangle, pos) {
-	return rectangle.p1.x === pos.x || rectangle.p1.y === pos.y || rectangle.p2.x === pos.x || rectangle.p2.y === pos.y;
+function isEdge(room, pos) {
+	if (room.p1.x === pos.x || room.p2.x === pos.x ) {
+		return "vertical";
+	} 
+	
+	if (room.p1.y === pos.y || room.p2.y === pos.y) {
+		return "horizontal";
+	}
+	
+	return false;
 }
 
 function isValidRectangle(rectangle) {
