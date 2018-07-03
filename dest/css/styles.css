@@ -9,25 +9,104 @@ body {
   user-select: none; }
 
 main {
-  width: 700px;
-  margin: 50px auto; }
+  width: 100%;
+  margin: 50px auto;
+  display: flex; }
 
 h1 {
+  font-family: 'Overpass Mono', monospace;
   padding: 50px 0 20px;
   text-transform: uppercase;
-  font-weight: 700;
-  font-size: 1.2em; }
+  font-size: 2.2em; }
   h1 span {
     font-weight: 300; }
 
+h2 {
+  font-family: 'Overpass Mono', monospace;
+  font-size: 32px;
+  width: 100%;
+  text-align: center; }
+
+header {
+  margin-left: 15px;
+  width: 950px;
+  text-align: center; }
+
 .toolbar {
-  margin: 15px 0; }
+  margin: 0 15px;
+  width: 250px;
+  border-right: 7px solid #605856;
+  border-bottom: 7px solid #605856;
+  border-top: 7px solid #D0CCD0;
+  border-left: 7px solid #D0CCD0; }
+  .toolbar input {
+    display: none; }
+  .toolbar div {
+    margin: 15px 0; }
+  .toolbar--button {
+    content: "";
+    width: 60px;
+    height: 60px;
+    margin: 0 auto;
+    display: block;
+    border-right: 4px solid #605856;
+    border-bottom: 4px solid #605856;
+    border-top: 4px solid #D0CCD0;
+    border-left: 4px solid #D0CCD0;
+    position: relative;
+    background-repeat: no-repeat;
+    background-size: 80%;
+    background-position: center; }
+    .toolbar--button__room {
+      background-image: url(https://image.flaticon.com/icons/svg/562/562659.svg); }
+    .toolbar--button__door {
+      background-image: url(https://image.flaticon.com/icons/svg/475/475698.svg); }
+      .toolbar--button__door:after {
+        content: "";
+        display: block;
+        width: 15px;
+        height: 15px;
+        background-image: url(https://image.flaticon.com/icons/svg/109/109526.svg);
+        background-size: 80%;
+        background-position: center;
+        background-repeat: no-repeat;
+        position: absolute;
+        right: 5px;
+        top: 5px;
+        background-color: #fff; }
+    .toolbar--button__window {
+      background-image: url(https://www.flaticon.com/premium-icon/icons/svg/796/796615.svg); }
+      .toolbar--button__window:after {
+        content: "";
+        display: block;
+        width: 15px;
+        height: 15px;
+        background-image: url(https://image.flaticon.com/icons/svg/109/109526.svg);
+        background-size: 80%;
+        background-position: center;
+        background-repeat: no-repeat;
+        position: absolute;
+        right: 5px;
+        top: 5px;
+        background-color: #fff; }
+    .toolbar--button__delete {
+      background-image: url(https://image.flaticon.com/icons/svg/446/446046.svg); }
+  .toolbar #newHome {
+    background-image: url(https://image.flaticon.com/icons/svg/899/899205.svg); }
+  .toolbar #newLayer {
+    background-image: url(https://image.flaticon.com/icons/svg/958/958877.svg); }
+  .toolbar--buttonLabel {
+    font-size: 18px;
+    text-align: center;
+    width: 100%;
+    display: block;
+    font-weight: 300; }
 
 label {
   margin: 0 15px 0 0; }
 
 .svg-wrapper {
-  width: 100%;
+  width: 700px;
   height: 500px; }
 
 .svg {
