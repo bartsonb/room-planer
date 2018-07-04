@@ -6,8 +6,13 @@ let DOM = {
 		door: document.querySelector('#door-tool'),
 		window: document.querySelector('#window-tool'),
 		delete: document.querySelector('#delete-tool'),
-		save: document.querySelector('.save'),
 		layer: document.querySelector('.layer')
+	},
+	form: {
+		this: document.querySelector('form'),
+		floors: document.querySelector('.input-floors'),
+		rooms: document.querySelector('.input-rooms'),
+		submit: document.querySelector('.submit')
 	}
 };
 
@@ -68,7 +73,7 @@ let rectangle = {
 
 
 // EVENT HANDLER
-DOM.button.save.addEventListener('click', saveHandler);
+DOM.form.submit.addEventListener('click', submitHandler);
 DOM.button.layer.addEventListener('click', layerHandler);
 
 Object.keys(DOM.button).forEach( key => {
@@ -121,18 +126,25 @@ function layerHandler() {
 		lines.add(floor.snap.line(0, i, width, i).attr({ stroke: '#efefef' }));
 	}
 
-	// previewRectangle
+	// display floor name
+	floor.snap.text(15, 25, floorName).attr({ class: 'layername' });
+
+	// create previewRectangle
 	floor.previewRectangle = floor.snap.rect(-50, -50, gridSize, gridSize).attr({ class: 'preview' });
 
-	// pointerCircle
+	// create pointerCircle
 	floor.pointerCircle = floor.snap.ellipse(-50, -50, 2.5, 2.5).attr({ class: 'pointer' });
 
 	// pushing deep copy to floors array
 	floors.push( $.extend(true, {}, floor) );
 }
 
-function saveHandler() {
-	DOM.wrapper.append(JSON.stringify(rooms));
+function submitHandler(event) {
+	event.preventDefault();
+	DOM.form.rooms.value = JSON.stringify(rooms);
+	DOM.form.floors.value = JSON.stringify(floors);
+
+	DOM.form.this.submit();
 }
 
 function buttonHandler(event) {

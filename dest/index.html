@@ -25,10 +25,16 @@
 		<label for="delete-tool">Delete Tool</label>
 	</div>
 
-	<div class="svg-wrapper"></div>
+	<div class="buttons">
+		<form action="http://localhost:3000/post" method="POST">
+			<input type="hidden" name="floors" class="input-floors">
+			<input type="hidden" name="rooms" class="input-rooms">
+			<input type="submit" value="Senden" class="submit">
+		</form>
+		<button class="layer">New Layer</button>
+	</div>
 
-	<button class="save">Save</button>
-	<button class="layer">New Layer</button>
+	<div class="svg-wrapper"></div>
 
 </main>
 
