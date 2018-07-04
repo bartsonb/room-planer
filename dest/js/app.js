@@ -1,43 +1,43 @@
 // DOM
 let DOM = {
 	wrapper: document.querySelector('.svg-wrapper'),
-	svg: document.querySelector('.svg'),
-	dropdown: {
-		box: document.querySelector('.select-dialog'),
-		select: document.querySelector('.select-description'),
-		submit: document.querySelector('.select-submit')
-	},
 	button: {
 		room: document.querySelector('#room-tool'),
 		door: document.querySelector('#door-tool'),
 		window: document.querySelector('#window-tool'),
-		delete: document.querySelector('#delete-tool')
+		delete: document.querySelector('#delete-tool'),
+		save: document.querySelector('.save'),
+		layer: document.querySelector('.layer')
 	}
 };
 
 
 // GLOBALS
-let snap = Snap('.svg');
-
 let gridSize = 20;
 let mode;
 let tool;
 
+let floors = [];
 let rooms = [];
-
-let pointerCircle;
-let previewRectangle;
 
 let pos = {
 	x: undefined,
 	y: undefined
 };
 
+let floor = {
+	name: undefined,
+	snap: undefined,
+  pointerCircle: undefined,
+  previewRectangle: undefined
+};
+
 let rectangle = {
 	doors: 0,
 	windows: 0,
-	story: 1,
+	floor: undefined,
 	description: undefined,
+	direction: undefined,
 	p1: {
 		x: undefined,
 		y: undefined
@@ -58,7 +58,7 @@ let rectangle = {
 	isValid: function()  {
 		return this.width() !== 0 && this.height() !== 0;
 	},
-	getDirection() {
+	getDirection: function() {
 		if (this.p1.x < this.p2.x && this.p1.y < this.p2.y) { return "top-left-bottom-right" }
 		if (this.p1.x > this.p2.x && this.p1.y > this.p2.y) { return "bottom-right-top-left" }
 		if (this.p1.x > this.p2.x && this.p1.y < this.p2.y) { return "top-right-bottom-left" }
@@ -68,13 +68,8 @@ let rectangle = {
 
 
 // EVENT HANDLER
-DOM.svg.addEventListener('mousemove', moveHandler);
-DOM.svg.addEventListener('mousemove', livePreview);
-
-DOM.svg.addEventListener('mousedown', mouseDownHandler);
-DOM.svg.addEventListener('mouseup', mouseUpHandler);
-
-DOM.svg.addEventListener('click', clickHandler);
+DOM.button.save.addEventListener('click', saveHandler);
+DOM.button.layer.addEventListener('click', layerHandler);
 
 Object.keys(DOM.button).forEach( key => {
 	DOM.button[key].addEventListener('click', buttonHandler);
@@ -82,32 +77,63 @@ Object.keys(DOM.button).forEach( key => {
 
 
 // FUNCTIONS
-(function init() {
+function layerHandler() {
+	let floorCount = floors.length;
+	let floorName = window.prompt('Names des Stockwerks?').replace(/\s/g, "-").toLowerCase();
+
+	// creating a new SVG Element
+	let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+	svg.setAttribute('class', floorName);
+	svg.setAttribute('id', floorCount);
+
+	DOM.wrapper.append(svg);
+
+	floor.name = floorName;
+	floor.snap = Snap('.' + floorName);
+
+	// setting event listener
+	floor.snap.node.addEventListener('mousemove', moveHandler);
+	floor.snap.node.addEventListener('mousemove', livePreview);
+
+	floor.snap.node.addEventListener('mousedown', mouseDownHandler);
+	floor.snap.node.addEventListener('mouseup', mouseUpHandler);
+
+	floor.snap.node.addEventListener('click', clickHandler);
+
 	// set mode
 	mode = "idle";
 
-	// set tool 
-	if ( DOM.button.room.checked ) { tool = "room" }
+	// set tool
+	Object.keys(DOM.button).forEach( key => {
+		if ( DOM.button[key].checked ) { tool = key; }
+	});
 
 	// drawing grid
-	let width = DOM.svg.getBoundingClientRect().width;
-	let height = DOM.svg.getBoundingClientRect().height;
-	let lines = snap.g().attr({	class: 'lines' });
+	let width = floor.snap.node.getBoundingClientRect().width;
+	let height = floor.snap.node.getBoundingClientRect().height;
+	let lines = floor.snap.g().attr({	class: 'lines' });
 
 	for (let i = gridSize; i <= width; i += gridSize) {
-		lines.add(snap.line(i, 0, i, height).attr({	stroke: '#efefef' }));
+		lines.add(floor.snap.line(i, 0, i, height).attr({	stroke: '#efefef' }));
 	}
 
 	for (let i = gridSize; i <= height; i+= gridSize) {
-		lines.add(snap.line(0, i, width, i).attr({ stroke: '#efefef' }));
+		lines.add(floor.snap.line(0, i, width, i).attr({ stroke: '#efefef' }));
 	}
 
 	// previewRectangle
-	previewRectangle = snap.rect(-50, -50, gridSize, gridSize).attr({ class: 'preview' });
+	floor.previewRectangle = floor.snap.rect(-50, -50, gridSize, gridSize).attr({ class: 'preview' });
 
 	// pointerCircle
-	pointerCircle = snap.ellipse(-50, -50, 2.5, 2.5).attr({ class: 'pointer' });
-})();
+	floor.pointerCircle = floor.snap.ellipse(-50, -50, 2.5, 2.5).attr({ class: 'pointer' });
+
+	// pushing deep copy to floors array
+	floors.push( $.extend(true, {}, floor) );
+}
+
+function saveHandler() {
+	DOM.wrapper.append(JSON.stringify(rooms));
+}
 
 function buttonHandler(event) {
 	// get tool name from radiobutton id 
@@ -116,18 +142,12 @@ function buttonHandler(event) {
 
 function clickHandler() {
 	if (tool === "door") {
-		rooms.forEach(room => {	addDoor(pos, room, isSide(room, pos, rectangle.getDirection())) });
+		rooms.forEach(room => {	addDoor(pos, room, isSide(room, pos, room.direction)) });
 	}
 
 	if (tool === "window") {
-		rooms.forEach(room => { addWindow(pos, room, isSide(room, pos, rectangle.getDirection())) });
+		rooms.forEach(room => { addWindow(pos, room, isSide(room, pos, room.direction)) });
 	}
-
-	// if (tool === "delete") {
-	// 	if (event.target.tagName !== "svg" && event.target.tagName !== "line" && event.target.tagName !== "ellipse") {
-	// 		event.target.remove();
-	// 	}
-	// }
 }
 
 function moveHandler(event) {
@@ -141,8 +161,11 @@ function moveHandler(event) {
 		rectangle.p2.y = pos.y;
 	}
 
+	// setting floor in temporary rectangle
+	rectangle.floor = parseInt(this.getAttribute('id'));
+
 	// updating position of the pointercircle
-	pointerCircle.attr({ cx: pos.x, cy: pos.y });
+	floors[rectangle.floor].pointerCircle.attr({ cx: pos.x, cy: pos.y });
 }
 
 function livePreview() {
@@ -150,23 +173,23 @@ function livePreview() {
 		if ( rectangle.isValid() ) {
 			switch ( rectangle.getDirection() ) {
 				case "top-left-bottom-right":
-					previewRectangle.attr({ x: rectangle.p1.x, y: rectangle.p1.y, width: rectangle.width(), height: rectangle.height() });
+					floors[rectangle.floor].previewRectangle.attr({ x: rectangle.p1.x, y: rectangle.p1.y, width: rectangle.width(), height: rectangle.height() });
 					break;
 				case "bottom-right-top-left":
-					previewRectangle.attr({ x: rectangle.p2.x, y: rectangle.p2.y, width: rectangle.width(), height: rectangle.height() });
+					floors[rectangle.floor].previewRectangle.attr({ x: rectangle.p2.x, y: rectangle.p2.y, width: rectangle.width(), height: rectangle.height() });
 					break;
 				case "top-right-bottom-left":
-					previewRectangle.attr({ x: rectangle.p2.x, y: rectangle.p1.y, width: rectangle.width(), height: rectangle.height() });
+					floors[rectangle.floor].previewRectangle.attr({ x: rectangle.p2.x, y: rectangle.p1.y, width: rectangle.width(), height: rectangle.height() });
 					break;
 				case "bottom-left-top-right":
-					previewRectangle.attr({ x: rectangle.p1.x, y: rectangle.p2.y, width: rectangle.width(), height: rectangle.height() });
+					floors[rectangle.floor].previewRectangle.attr({ x: rectangle.p1.x, y: rectangle.p2.y, width: rectangle.width(), height: rectangle.height() });
 					break;
 			}
 		} else {
-			previewRectangle.attr({x: -500, y: -500});
+			floors[rectangle.floor].previewRectangle.attr({x: -500, y: -500});
 		}
 	} else {
-		previewRectangle.attr({x: -500,	y: -500});
+		floors[rectangle.floor].previewRectangle.attr({x: -500,	y: -500});
 	}
 }
 
@@ -219,52 +242,52 @@ function isSide(room, pos, direction) {
 			break;
 	}
 
-
 	return false;
 }
 
 function addDoor(pos, room, rotation) {
-	if (rotation === "vertical") { room.doors += 1; snap.rect(pos.x - 5, pos.y - 3, 10, 6).addClass('door'); }
-	if (rotation === "horizontal") { room.doors += 1; snap.rect(pos.x - 5, pos.y - 3, 10, 6).addClass('door').transform('r90'); }
+	if (rotation === "vertical") { room.doors += 1; floors[rectangle.floor].snap.rect(pos.x - 5, pos.y - 3, 10, 6).addClass('door'); }
+	if (rotation === "horizontal") { room.doors += 1; floors[rectangle.floor].snap.rect(pos.x - 5, pos.y - 3, 10, 6).addClass('door').transform('r90'); }
 }
 
 function addWindow(pos, room, rotation) {
-	if (rotation === "vertical") { room.windows += 1; snap.rect(pos.x - 5, pos.y - 3, 10, 6).addClass('window'); }
-	if (rotation === "horizontal") { room.windows += 1; snap.rect(pos.x - 5, pos.y - 3, 10, 6).addClass('window').transform('r90'); }
+	if (rotation === "vertical") { room.windows += 1; floors[rectangle.floor].snap.rect(pos.x - 5, pos.y - 3, 10, 6).addClass('window'); }
+	if (rotation === "horizontal") { room.windows += 1; floors[rectangle.floor].snap.rect(pos.x - 5, pos.y - 3, 10, 6).addClass('window').transform('r90'); }
 }
 
 function addRoom(direction) {
 	rectangle.description = window.prompt("Zweck des Zimmers?");
+	rectangle.direction = rectangle.getDirection();
 	let roomElement, descElement, sizeElement;
 
 	switch (direction) {
 		case "top-left-bottom-right":
-			roomElement = snap.rect(rectangle.p1.x, rectangle.p1.y, rectangle.p2.x - rectangle.p1.x, rectangle.p2.y - rectangle.p1.y).attr({class: 'room'});
-			descElement = snap.text(rectangle.p1.x + 5, rectangle.p1.y + 15, rectangle.description).attr({class: 'desc'});
-			sizeElement = snap.text(rectangle.p1.x + 5, rectangle.p1.y + 28, rectangle.size() + "qm").attr({class: 'size'});
+			roomElement = floors[rectangle.floor].snap.rect(rectangle.p1.x, rectangle.p1.y, rectangle.p2.x - rectangle.p1.x, rectangle.p2.y - rectangle.p1.y).attr({class: 'room'});
+			descElement = floors[rectangle.floor].snap.text(rectangle.p1.x + 5, rectangle.p1.y + 15, rectangle.description).attr({class: 'desc'});
+			sizeElement = floors[rectangle.floor].snap.text(rectangle.p1.x + 5, rectangle.p1.y + 28, rectangle.size() + "qm").attr({class: 'size'});
 			break;
 
 		case "bottom-right-top-left":
-			roomElement = snap.rect(rectangle.p2.x, rectangle.p2.y, rectangle.p1.x - rectangle.p2.x, rectangle.p1.y - rectangle.p2.y).addClass('room');
-			descElement = snap.text(rectangle.p2.x + 5, rectangle.p2.y + 15, rectangle.description).attr({class: 'desc'});
-			sizeElement = snap.text(rectangle.p2.x + 5, rectangle.p2.y + 28, rectangle.size() + "qm").attr({class: 'size'});
+			roomElement = floors[rectangle.floor].snap.rect(rectangle.p2.x, rectangle.p2.y, rectangle.p1.x - rectangle.p2.x, rectangle.p1.y - rectangle.p2.y).addClass('room');
+			descElement = floors[rectangle.floor].snap.text(rectangle.p2.x + 5, rectangle.p2.y + 15, rectangle.description).attr({class: 'desc'});
+			sizeElement = floors[rectangle.floor].snap.text(rectangle.p2.x + 5, rectangle.p2.y + 28, rectangle.size() + "qm").attr({class: 'size'});
 			break;
 
 		case "top-right-bottom-left":
-			roomElement = snap.rect(rectangle.p2.x, rectangle.p1.y, rectangle.p1.x - rectangle.p2.x, rectangle.p2.y - rectangle.p1.y).addClass('room'); 			descElement = snap.text(rectangle.p2.x + 5, rectangle.p1.y + 15, rectangle.description).attr({class: 'desc'});
-			sizeElement = snap.text(rectangle.p2.x + 5, rectangle.p1.y + 28, rectangle.size() + "qm").attr({class: 'size'});
+			roomElement = floors[rectangle.floor].snap.rect(rectangle.p2.x, rectangle.p1.y, rectangle.p1.x - rectangle.p2.x, rectangle.p2.y - rectangle.p1.y).addClass('room'); 			descElement = floors[rectangle.floor].snap.text(rectangle.p2.x + 5, rectangle.p1.y + 15, rectangle.description).attr({class: 'desc'});
+			sizeElement = floors[rectangle.floor].snap.text(rectangle.p2.x + 5, rectangle.p1.y + 28, rectangle.size() + "qm").attr({class: 'size'});
 			break;
 
 		case "bottom-left-top-right":
-			roomElement = snap.rect(rectangle.p1.x, rectangle.p2.y, rectangle.p2.x - rectangle.p1.x, rectangle.p1.y - rectangle.p2.y).addClass('room');
-			descElement = snap.text(rectangle.p1.x + 5, rectangle.p2.y + 15, rectangle.description).attr({class: 'desc'});
-			sizeElement = snap.text(rectangle.p1.x + 5, rectangle.p2.y + 28, rectangle.size() + "qm").attr({class: 'size'});
+			roomElement = floors[rectangle.floor].snap.rect(rectangle.p1.x, rectangle.p2.y, rectangle.p2.x - rectangle.p1.x, rectangle.p1.y - rectangle.p2.y).addClass('room');
+			descElement = floors[rectangle.floor].snap.text(rectangle.p1.x + 5, rectangle.p2.y + 15, rectangle.description).attr({class: 'desc'});
+			sizeElement = floors[rectangle.floor].snap.text(rectangle.p1.x + 5, rectangle.p2.y + 28, rectangle.size() + "qm").attr({class: 'size'});
 			break;
 	}
 
 
-	snap.g(roomElement, descElement, sizeElement).attr({id: rooms.length});
+	floors[rectangle.floor].snap.g(roomElement, descElement, sizeElement).attr({id: rooms.length});
 
 	// pusing deep copy of rectangle into rooms array
-	rooms.push(JSON.parse(JSON.stringify(rectangle)));
+	rooms.push( $.extend(true, {}, rectangle) );
 }

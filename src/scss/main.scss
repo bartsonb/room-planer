@@ -1,7 +1,7 @@
 // COLORS
 $white: white;
 
-$white_20: rgba(255, 255, 255, 0.2);
+$white_20: rgba(255, 255, 255, 0.5);
 $black_20: rgba(0, 0, 0, 0.2);
 
 $grey-light: #ccc;
@@ -10,25 +10,23 @@ $grey-dark-2: #222;
 
 $red: red;
 
-
 // IMPORT
 @import url(https://fonts.googleapis.com/css?family=Roboto:300,400,700);
-
 
 // SCSS
 * {
 	margin: 0;
 	padding: 0;
-    box-sizing: border-box;
+	box-sizing: border-box;
 }
 
 body {
 	font-family: "Roboto", sans-serif;
-    user-select: none;
+	user-select: none;
 }
 
 main {
-	width: 700px;
+	width: 900px;
 	margin: 50px auto;
 }
 
@@ -36,8 +34,8 @@ h1 {
 	padding: 50px 0 20px;
 	text-transform: uppercase;
 	font-weight: 700;
-    font-size: 1.2em;
-    
+	font-size: 1.2em;
+
 	span {
 		font-weight: 300;
 	}
@@ -83,56 +81,59 @@ label {
 	}
 }
 
-
-
 .svg-wrapper {
 	width: 100%;
 	height: 500px;
 	position: relative;
+
+	> svg {
+		border: solid 1px $grey-light;
+		width: 100%;
+		height: 100%;
+
+
+		ellipse {
+			display: none;
+		}
+
+		.door {
+			fill: $grey-dark-2;
+		}
+
+		.window {
+			fill: rgba(255, 255, 255, 0.8);
+		}
+
+		.room {
+			fill: $white_20;
+			stroke: $grey-dark-2;
+			stroke-width: 2px;
+		}
+
+		.desc {
+			font-size: 11px;
+			font-weight: bold;
+		}
+
+		.size {
+			font-size: 11px;
+		}
+
+		.preview {
+			fill: $black_20;
+			stroke: $grey-dark;
+			stroke-width: 2px;
+		}
+
+		&:hover {
+
+			ellipse {
+				display: block;
+			}
+		}
+	}
 }
 
-.svg {
-	border: solid 1px $grey-light;
-	width: 100%;
-	height: 100%;
-    
-	ellipse {
-		display: none;
-    }
-
-    .door {
-        fill: $grey-dark-2; 
-    }
-
-    .window {
-        fill: rgba(255, 255, 255, 0.8);
-    }
-    
-	.room {
-		fill: $white_20;
-		stroke: $grey-dark-2;
-		stroke-width: 2px;
-    }
-    
-	.desc {
-		font-size: 11px;
-		font-weight: bold;
-    }
-    
-	.size {
-		font-size: 11px;
-    }
-    
-	.preview {
-		fill: $black_20;
-		stroke: $grey-dark;
-		stroke-width: 2px;
-    }
-    
-    &:hover {
-       
-		ellipse {
-			display: block;
-		}
-    }
+button {
+	padding: 5px 10px;
 }

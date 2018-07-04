@@ -9,7 +9,7 @@ body {
   user-select: none; }
 
 main {
-  width: 700px;
+  width: 900px;
   margin: 50px auto; }
 
 h1 {
@@ -55,29 +55,31 @@ label {
   width: 100%;
   height: 500px;
   position: relative; }
+  .svg-wrapper > svg {
+    border: solid 1px #ccc;
+    width: 100%;
+    height: 100%; }
+    .svg-wrapper > svg ellipse {
+      display: none; }
+    .svg-wrapper > svg .door {
+      fill: #222; }
+    .svg-wrapper > svg .window {
+      fill: rgba(255, 255, 255, 0.8); }
+    .svg-wrapper > svg .room {
+      fill: rgba(255, 255, 255, 0.5);
+      stroke: #222;
+      stroke-width: 2px; }
+    .svg-wrapper > svg .desc {
+      font-size: 11px;
+      font-weight: bold; }
+    .svg-wrapper > svg .size {
+      font-size: 11px; }
+    .svg-wrapper > svg .preview {
+      fill: rgba(0, 0, 0, 0.2);
+      stroke: #555;
+      stroke-width: 2px; }
+    .svg-wrapper > svg:hover ellipse {
+      display: block; }
 
-.svg {
-  border: solid 1px #ccc;
-  width: 100%;
-  height: 100%; }
-  .svg ellipse {
-    display: none; }
-  .svg .door {
-    fill: #222; }
-  .svg .window {
-    fill: rgba(255, 255, 255, 0.8); }
-  .svg .room {
-    fill: rgba(255, 255, 255, 0.2);
-    stroke: #222;
-    stroke-width: 2px; }
-  .svg .desc {
-    font-size: 11px;
-    font-weight: bold; }
-  .svg .size {
-    font-size: 11px; }
-  .svg .preview {
-    fill: rgba(0, 0, 0, 0.2);
-    stroke: #555;
-    stroke-width: 2px; }
-  .svg:hover ellipse {
-    display: block; }
+button {
+  padding: 5px 10px; }
