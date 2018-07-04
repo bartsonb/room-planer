@@ -115,20 +115,12 @@ function buttonHandler(event) {
 }
 
 function clickHandler() {
-	console.log(pos.x + ", " + pos.y);
-
 	if (tool === "door") {
-		rooms.forEach(room => {
-			if (isSide(room, pos) === "vertical") { addDoor(pos, room, "vertical") }
-			if (isSide(room, pos) === "horizontal") { addDoor(pos, room, "horizontal") }
-		});
+		rooms.forEach(room => {	addDoor(pos, room, isSide(room, pos, rectangle.getDirection())) });
 	}
 
 	if (tool === "window") {
-		rooms.forEach(room => {
-			if (isSide(room, pos) === "vertical") { addWindow(pos, room, "vertical") }
-			if (isSide(room, pos) === "horizontal") { addWindow(pos, room, "horizontal") }
-		});
+		rooms.forEach(room => { addWindow(pos, room, isSide(room, pos, rectangle.getDirection())) });
 	}
 
 	// if (tool === "delete") {
@@ -204,6 +196,33 @@ function drawRectangle(action, pos) {
 	}
 }
 
+function isSide(room, pos, direction) {
+	switch (direction) {
+		case "top-left-bottom-right":
+			if (pos.x > room.p1.x && pos.x < room.p2.x && ( pos.y === room.p1.y || pos.y === room.p2.y ) ) { return "vertical" }
+			if (pos.y > room.p1.y && pos.y < room.p2.y && ( pos.x === room.p1.x || pos.x === room.p2.x ) ) { return "horizontal"; }
+			break;
+
+		case "bottom-right-top-left":
+			if (pos.x < room.p1.x && pos.x > room.p2.x && ( pos.y === room.p1.y || pos.y === room.p2.y ) ) { return "vertical" }
+			if (pos.y < room.p1.y && pos.y > room.p2.y && ( pos.x === room.p1.x || pos.x === room.p2.x ) ) { return "horizontal"; }
+			break;
+
+		case "top-right-bottom-left":
+			if (pos.x < room.p1.x && pos.x > room.p2.x && ( pos.y === room.p1.y || pos.y === room.p2.y ) ) { return "vertical" }
+			if (pos.y > room.p1.y && pos.y < room.p2.y && ( pos.x === room.p1.x || pos.x === room.p2.x ) ) { return "horizontal"; }
+			break;
+
+		case "bottom-left-top-right":
+			if (pos.x > room.p1.x && pos.x < room.p2.x && ( pos.y === room.p1.y || pos.y === room.p2.y ) ) { return "vertical" }
+			if (pos.y < room.p1.y && pos.y > room.p2.y && ( pos.x === room.p1.x || pos.x === room.p2.x ) ) { return "horizontal"; }
+			break;
+	}
+
+
+	return false;
+}
+
 function addDoor(pos, room, rotation) {
 	if (rotation === "vertical") { room.doors += 1; snap.rect(pos.x - 5, pos.y - 3, 10, 6).addClass('door'); }
 	if (rotation === "horizontal") { room.doors += 1; snap.rect(pos.x - 5, pos.y - 3, 10, 6).addClass('door').transform('r90'); }
@@ -212,13 +231,6 @@ function addDoor(pos, room, rotation) {
 function addWindow(pos, room, rotation) {
 	if (rotation === "vertical") { room.windows += 1; snap.rect(pos.x - 5, pos.y - 3, 10, 6).addClass('window'); }
 	if (rotation === "horizontal") { room.windows += 1; snap.rect(pos.x - 5, pos.y - 3, 10, 6).addClass('window').transform('r90'); }
-}
-
-function isSide(room, pos) {
-	if (pos.x > room.p1.x && pos.x < room.p2.x && ( pos.y === room.p1.y || pos.y === room.p2.y ) ) { return "vertical" }
-	if (pos.y > room.p1.y && pos.y < room.p2.y && ( pos.x === room.p1.x || pos.x === room.p2.x ) ) { return "horizontal"; }
-
-	return false;
 }
 
 function addRoom(direction) {
