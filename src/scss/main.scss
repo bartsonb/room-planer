@@ -157,6 +157,16 @@ label {
 	ellipse {
 		display: none;
     }
+
+    .door {
+        fill: $grey-dark-2; 
+    }
+
+    .window {
+        fill: $white;
+        stroke: $red;
+        stroke-width: 1px;
+    }
     
 	.room {
 		position: relative;
