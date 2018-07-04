@@ -6,7 +6,7 @@ let DOM = {
 		door: document.querySelector('#door-tool'),
 		window: document.querySelector('#window-tool'),
 		delete: document.querySelector('#delete-tool'),
-		layer: document.querySelector('.layer')
+		layer: document.querySelector('.new-layer')
 	},
 	form: {
 		this: document.querySelector('form'),
@@ -90,6 +90,7 @@ function layerHandler() {
 	let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
 	svg.setAttribute('class', floorName);
 	svg.setAttribute('id', floorCount);
+	svg.style.zIndex = "100";
 
 	DOM.wrapper.append(svg);
 
@@ -126,8 +127,9 @@ function layerHandler() {
 		lines.add(floor.snap.line(0, i, width, i).attr({ stroke: '#efefef' }));
 	}
 
-	// display floor name
+	// display floor name and add new layer button
 	floor.snap.text(15, 25, floorName).attr({ class: 'layername' });
+	addLayerButton(floorName);
 
 	// create previewRectangle
 	floor.previewRectangle = floor.snap.rect(-50, -50, gridSize, gridSize).attr({ class: 'preview' });
@@ -143,7 +145,6 @@ function submitHandler(event) {
 	event.preventDefault();
 	DOM.form.rooms.value = JSON.stringify(rooms);
 	DOM.form.floors.value = JSON.stringify(floors);
-
 	DOM.form.this.submit();
 }
 
@@ -302,4 +303,22 @@ function addRoom(direction) {
 
 	// pusing deep copy of rectangle into rooms array
 	rooms.push( $.extend(true, {}, rectangle) );
+}
+
+function addLayerButton(floorname) {
+	let btn = document.createElement('button');
+	btn.innerText = floorname;
+	btn.setAttribute('class', 'switch-layer');
+	document.querySelector('.buttons').append(btn);
+	btn.addEventListener('click', switchLayers);
+}
+
+function switchLayers() {
+	let svgs = document.querySelectorAll('svg');
+	let btnText = event.target.innerText;
+
+	svgs.forEach( svg => svg.style.zIndex = "0" );
+	svgs.forEach( svg => {
+		if ( svg.getAttribute('class') === btnText ) { svg.style.zIndex = "100"; }
+	});
 }
