@@ -28,7 +28,7 @@ body {
 }
 
 main {
-	width: 700px;
+	width: 1000px;
 	margin: 50px auto;
 }
 
@@ -51,15 +51,50 @@ label {
 	margin: 0 15px 0 0;
 }
 
+.select-dialog {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	background: $black_20;
+	display: none;
+
+	&-wrapper {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		margin-top: -45px;
+		margin-left: -75px;
+		width: 150px;
+		height: 90px;
+		padding: 10px;
+		background: $white;
+		border: solid 1px $grey-light;
+		border-radius: 3px;
+	}
+
+	input,
+	select {
+		width: 100%;
+		padding: 5px 10px;
+	}
+
+	:not(:last-child) {
+		margin: 0 0 10px 0;
+	}
+}
+
+
+
 .svg-wrapper {
 	width: 100%;
 	height: 500px;
+	position: relative;
 }
 
 .svg {
 	border: solid 1px $grey-light;
 	width: 100%;
-    height: 100%;
+	height: 100%;
     
 	ellipse {
 		display: none;
@@ -71,24 +106,21 @@ label {
 
     .window {
         fill: $white;
-        stroke: $red;
-        stroke-width: 1px;
     }
     
 	.room {
-		position: relative;
 		fill: $white_20;
 		stroke: $grey-dark-2;
 		stroke-width: 2px;
     }
     
 	.desc {
-		font-size: 13px;
+		font-size: 11px;
 		font-weight: bold;
     }
     
 	.size {
-		font-size: 13px;
+		font-size: 11px;
     }
     
 	.preview {

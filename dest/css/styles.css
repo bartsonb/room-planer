@@ -9,7 +9,7 @@ body {
   user-select: none; }
 
 main {
-  width: 700px;
+  width: 1000px;
   margin: 50px auto; }
 
 h1 {
@@ -26,9 +26,35 @@ h1 {
 label {
   margin: 0 15px 0 0; }
 
+.select-dialog {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.2);
+  display: none; }
+  .select-dialog-wrapper {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -45px;
+    margin-left: -75px;
+    width: 150px;
+    height: 90px;
+    padding: 10px;
+    background: white;
+    border: solid 1px #ccc;
+    border-radius: 3px; }
+  .select-dialog input,
+  .select-dialog select {
+    width: 100%;
+    padding: 5px 10px; }
+  .select-dialog :not(:last-child) {
+    margin: 0 0 10px 0; }
+
 .svg-wrapper {
   width: 100%;
-  height: 500px; }
+  height: 500px;
+  position: relative; }
 
 .svg {
   border: solid 1px #ccc;
@@ -39,19 +65,16 @@ label {
   .svg .door {
     fill: #222; }
   .svg .window {
-    fill: white;
-    stroke: red;
-    stroke-width: 1px; }
+    fill: white; }
   .svg .room {
-    position: relative;
     fill: rgba(255, 255, 255, 0.2);
     stroke: #222;
     stroke-width: 2px; }
   .svg .desc {
-    font-size: 13px;
+    font-size: 11px;
     font-weight: bold; }
   .svg .size {
-    font-size: 13px; }
+    font-size: 11px; }
   .svg .preview {
     fill: rgba(0, 0, 0, 0.2);
     stroke: #555;
