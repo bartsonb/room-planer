@@ -77,7 +77,8 @@ label {
       font-weight: bold; }
     .svg-wrapper > svg .size {
       font-size: 11px; }
-    .svg-wrapper > svg .preview {
+    .svg-wrapper > svg .preview,
+    .svg-wrapper > svg .previewPolygon {
       fill: rgba(0, 0, 0, 0.2);
       stroke: #555;
       stroke-width: 2px; }

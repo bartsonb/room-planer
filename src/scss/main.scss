@@ -121,10 +121,15 @@ label {
 			font-size: 11px;
 		}
 
-		.preview {
+		.preview,
+		.previewPolygon {
 			fill: $black_20;
 			stroke: $grey-dark;
 			stroke-width: 2px;
+		}
+
+		.previewPolygonHandle {
+
 		}
 
 		&:hover {
