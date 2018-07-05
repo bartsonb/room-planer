@@ -129,7 +129,9 @@ label {
 		}
 
 		.previewPolygonHandle {
-
+			fill: transparent;
+			stroke: $grey-dark;
+			stroke-width: 2px;
 		}
 
 		&:hover {
@@ -144,4 +146,16 @@ label {
 button,
 input {
 	padding: 5px 10px;
+}
+
+.layerList {
+	list-style-type: none;
+
+	&Title {
+
+	}
+
+	&Entry {
+		margin-left: 10px;
+	}
 }

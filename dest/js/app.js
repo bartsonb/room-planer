@@ -1,6 +1,7 @@
 // DOM
 let DOM = {
 	wrapper: document.querySelector('.svg-wrapper'),
+	layerlist: document.querySelector('.layerList'),
 	button: {
 		room: document.querySelector('#room-tool'),
 		polygon: document.querySelector('#polygon-tool'),
@@ -152,7 +153,7 @@ function layerHandler() {
 
 	// create previewPolygon and previewPolygonHandle
 	floor.previewPolygon = floor.snap.polygon(-50, -50).attr({ class: 'previewPolygon' });
-	floor.previewPolygonHandle = floor.snap.circle(-50, -50, 3, 3).attr({ class: 'previewPolygonHandle' });
+	floor.previewPolygonHandle = floor.snap.circle(-50, -50, 4, 4).attr({ class: 'previewPolygonHandle' });
 
 	// create previewRoom
 	floor.previewRoom = floor.snap.rect(-50, -50, gridSize, gridSize).attr({ class: 'preview' });
@@ -162,12 +163,18 @@ function layerHandler() {
 
 	// pushing deep copy to floors array
 	floors.push( $.extend(true, {}, floor) );
+
+	// update layerlist
+	updateLayerList();
 }
 
 function submitHandler(event) {
 	event.preventDefault();
+	let floorNames = [];
+	Object.keys(floors).forEach( key => { floorNames.push(floors[key].name) });
+
 	DOM.form.rooms.value = JSON.stringify(rooms);
-	DOM.form.floors.value = JSON.stringify(floors);
+	DOM.form.floors.value = floorNames;
 	DOM.form.this.submit();
 }
 
@@ -362,6 +369,9 @@ function addRoom(direction) {
 
 	// pusing deep copy of room into rooms array
 	rooms.push( $.extend(true, {}, room) );
+
+	// update layerlist
+	updateLayerList();
 }
 
 function addPolygon(coordinates) {
@@ -377,6 +387,9 @@ function addPolygon(coordinates) {
 
 	// pusing deep copy of room into rooms array
 	rooms.push( $.extend(true, {}, room) );
+
+	// update layerlist
+	updateLayerList();
 }
 
 function addLayerButton(floorname) {
@@ -394,5 +407,27 @@ function switchLayers() {
 	svgs.forEach( svg => svg.style.zIndex = "0" );
 	svgs.forEach( svg => {
 		if ( svg.getAttribute('class') === btnText ) { svg.style.zIndex = "100"; }
+	});
+}
+
+
+function updateLayerList() {
+	// CLEAR LIST
+	DOM.layerlist.innerHTML = "";
+
+	floors.forEach( (floor, index) => {
+		let newListTitle = document.createElement('li');
+		newListTitle.setAttribute('class', 'layerListTitle');
+		newListTitle.innerHTML = "<b>" + floor.name + "</b>";
+		DOM.layerlist.append(newListTitle);
+
+		rooms.forEach( room => {
+			if ( room.floor === index ) {
+				let newListEntry = document.createElement('li');
+				newListEntry.setAttribute('class', 'layerListEntry');
+				newListEntry.innerText = room.description;
+				DOM.layerlist.append(newListEntry);
+			}
+		});
 	});
 }

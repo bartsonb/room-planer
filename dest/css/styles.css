@@ -82,9 +82,18 @@ label {
       fill: rgba(0, 0, 0, 0.2);
       stroke: #555;
       stroke-width: 2px; }
+    .svg-wrapper > svg .previewPolygonHandle {
+      fill: transparent;
+      stroke: #555;
+      stroke-width: 2px; }
     .svg-wrapper > svg:hover ellipse {
       display: block; }
 
 button,
 input {
   padding: 5px 10px; }
+
+.layerList {
+  list-style-type: none; }
+  .layerListEntry {
+    margin-left: 10px; }
