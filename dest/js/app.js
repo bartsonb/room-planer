@@ -6,7 +6,7 @@ let DOM = {
 		room: document.querySelector('#room-tool'),
 		door: document.querySelector('#door-tool'),
 		window: document.querySelector('#window-tool'),
-		delete: document.querySelector('#delete-tool')
+		//delete: document.querySelector('#delete-tool')
 	}
 
 };
