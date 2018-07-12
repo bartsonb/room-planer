@@ -8,212 +8,92 @@ body {
   font-family: "Roboto", sans-serif;
   user-select: none; }
 
-header {
-  display: flex;
-  margin: 10px 15px;
-  width: 1230px;
-  text-align: center;
-  border-right: 7px solid #605856;
-  border-bottom: 7px solid #605856;
-  border-top: 7px solid #D0CCD0;
-  border-left: 7px solid #D0CCD0; }
-  header .logo {
-    width: 90px;
-    margin: 30px 30px 0 80px;
-    position: relative;
-    text-shadow: 3px 3px 0 #f00, -4px -2px 0 yellow, -6px -4px 0 blue; }
-    header .logo img {
-      width: 100%; }
-    header .logo svg {
-      position: absolute; }
-      header .logo svg#red {
-        position: absolute;
-        left: -2px;
-        top: -2px;
-        fill: red;
-        z-index: -3; }
-      header .logo svg#yellow {
-        position: absolute;
-        left: 2px;
-        top: -2px;
-        fill: yellow;
-        z-index: -2; }
-      header .logo svg#blue {
-        position: absolute;
-        left: -2px;
-        top: 2px;
-        fill: blue;
-        z-index: -1; }
-  header .buttonWrap {
-    margin-top: 65px; }
-    header .buttonWrap button {
-      border: none;
-      margin: 0 auto;
-      display: block;
-      width: 90px;
-      height: 40px;
-      background-color: black;
-      border: 1px solid #fff;
-      color: #fff;
-      font-size: 18px;
-      font-family: 'Open Sans';
-      transition: all 0.5s; }
-
 main {
-  width: 100%;
-  margin: 10px auto;
-  display: flex; }
+  width: 900px;
+  margin: 50px auto; }
 
 h1 {
-  font-family: 'Overpass Mono', monospace;
-  padding: 30px 0 30px 76px;
+  padding: 50px 0 20px;
   text-transform: uppercase;
-  text-shadow: 3px 3px 0 #f00, -4px -2px 0 yellow, -6px -4px 0 blue;
-  font-size: 4.6em;
-  margin-right: 80px; }
+  font-weight: 700;
+  font-size: 1.2em; }
   h1 span {
     font-weight: 300; }
 
-h2 {
-  font-family: 'Overpass Mono', monospace;
-  font-size: 32px;
-  width: 100%;
-  text-align: center; }
-
-h3 {
-  font-family: 'Overpass Mono', monospace;
-  font-size: 22px;
-  width: 100%;
-  text-align: left;
-  padding-left: 7%; }
-
-.toolbar {
-  margin: 0 15px;
-  width: 250px;
-  border-right: 7px solid #605856;
-  border-bottom: 7px solid #605856;
-  border-top: 7px solid #D0CCD0;
-  border-left: 7px solid #D0CCD0; }
-  .toolbar input {
-    display: none; }
-  .toolbar div {
-    margin: 15px 0;
-    background-color: #fff; }
-    .toolbar div:hover {
-      -webkit-filter: invert(100%);
-      filter: invert(100%);
-      _background-color: #000;
-      cursor: pointer;
-      transition: all 0.5s; }
-  .toolbar--button {
-    content: "";
-    width: 60px;
-    height: 60px;
-    margin: 0 auto;
-    display: block;
-    border-right: 4px solid #605856;
-    border-bottom: 4px solid #605856;
-    border-top: 4px solid #D0CCD0;
-    border-left: 4px solid #D0CCD0;
-    position: relative;
-    background-repeat: no-repeat;
-    background-size: 80%;
-    background-position: center; }
-    .toolbar--button__layer {
-      background-image: url(https://image.flaticon.com/icons/svg/958/958877.svg); }
-    .toolbar--button__room {
-      background-image: url(https://image.flaticon.com/icons/svg/562/562659.svg); }
-    .toolbar--button__door {
-      background-image: url(https://image.flaticon.com/icons/svg/475/475698.svg); }
-      .toolbar--button__door:after {
-        content: "";
-        display: block;
-        width: 15px;
-        height: 15px;
-        background-image: url(https://image.flaticon.com/icons/svg/109/109526.svg);
-        background-size: 80%;
-        background-position: center;
-        background-repeat: no-repeat;
-        position: absolute;
-        right: 5px;
-        top: 5px;
-        background-color: #fff; }
-    .toolbar--button__window {
-      background-image: url(https://www.flaticon.com/premium-icon/icons/svg/796/796615.svg); }
-      .toolbar--button__window:after {
-        content: "";
-        display: block;
-        width: 15px;
-        height: 15px;
-        background-image: url(https://image.flaticon.com/icons/svg/109/109526.svg);
-        background-size: 80%;
-        background-position: center;
-        background-repeat: no-repeat;
-        position: absolute;
-        right: 5px;
-        top: 5px;
-        background-color: #fff; }
-    .toolbar--button__delete {
-      background-image: url(https://image.flaticon.com/icons/svg/446/446046.svg); }
-  .toolbar #newHome {
-    background-image: url(https://image.flaticon.com/icons/svg/899/899205.svg); }
-  .toolbar #newLayer {
-    background-image: url(https://image.flaticon.com/icons/svg/958/958877.svg); }
-  .toolbar--buttonLabel {
-    font-size: 18px;
-    text-align: center;
-    width: 100%;
-    display: block;
-    font-weight: 300; }
+.toolbar,
+.buttons {
+  margin: 15px 0; }
 
 label {
   margin: 0 15px 0 0; }
 
-.svg-wrapper {
-  width: 700px;
-  height: 500px; }
-
-.svg {
-  border: solid 1px #ccc;
+.select-dialog {
+  position: absolute;
   width: 100%;
-  height: 100%; }
-  .svg ellipse {
-    display: none; }
-  .svg .door {
-    fill: #222; }
-  .svg .window {
-    fill: white;
-    stroke: red;
-    stroke-width: 1px; }
-  .svg .room {
-    position: relative;
-    fill: rgba(255, 255, 255, 0.2);
-    stroke: #222;
-    stroke-width: 2px; }
-  .svg .desc {
-    font-size: 13px;
-    font-weight: bold; }
-  .svg .size {
-    font-size: 13px; }
-  .svg .preview {
-    fill: rgba(0, 0, 0, 0.2);
-    stroke: #555;
-    stroke-width: 2px; }
-  .svg:hover ellipse {
-    display: block; }
+  height: 100%;
+  background: rgba(0, 0, 0, 0.2);
+  display: none; }
+  .select-dialog-wrapper {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -45px;
+    margin-left: -75px;
+    width: 150px;
+    height: 90px;
+    padding: 10px;
+    background: white;
+    border: solid 1px #ccc;
+    border-radius: 3px; }
+  .select-dialog input,
+  .select-dialog select {
+    width: 100%;
+    padding: 5px 10px; }
+  .select-dialog :not(:last-child) {
+    margin: 0 0 10px 0; }
 
-.layerbar {
-  width: 250px;
-  margin: 0 15px;
-  border-right: 7px solid #605856;
-  border-bottom: 7px solid #605856;
-  border-top: 7px solid #D0CCD0;
-  border-left: 7px solid #D0CCD0; }
-  .layerbar ul {
-    list-style-type: none; }
-    .layerbar ul li {
-      font-family: "Roboto", sans-serif;
-      padding-left: 15%; }
+.svg-wrapper {
+  width: 100%;
+  height: 400px;
+  position: relative; }
+  .svg-wrapper > svg {
+    position: absolute;
+    background-color: white;
+    border: solid 1px #ccc;
+    width: 100%;
+    height: 100%; }
+    .svg-wrapper > svg ellipse {
+      display: none; }
+    .svg-wrapper > svg .door {
+      fill: #222; }
+    .svg-wrapper > svg .window {
+      fill: rgba(255, 255, 255, 0.8); }
+    .svg-wrapper > svg .room {
+      fill: rgba(255, 255, 255, 0.5);
+      stroke: #222;
+      stroke-width: 2px; }
+    .svg-wrapper > svg .desc {
+      font-size: 11px;
+      font-weight: bold; }
+    .svg-wrapper > svg .size {
+      font-size: 11px; }
+    .svg-wrapper > svg .preview,
+    .svg-wrapper > svg .previewPolygon {
+      fill: rgba(0, 0, 0, 0.2);
+      stroke: #555;
+      stroke-width: 2px; }
+    .svg-wrapper > svg .previewPolygonHandle {
+      fill: transparent;
+      stroke: #555;
+      stroke-width: 2px; }
+    .svg-wrapper > svg:hover ellipse {
+      display: block; }
 
-.svg-wrapper:hover {
-  cursor: cell; }
+button,
+input {
+  padding: 5px 10px; }
+
+.layerList {
+  list-style-type: none; }
+  .layerListEntry {
+    margin-left: 10px; }

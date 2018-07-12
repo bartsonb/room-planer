@@ -1,7 +1,7 @@
 // COLORS
 $white: white;
 
-$white_20: rgba(255, 255, 255, 0.2);
+$white_20: rgba(255, 255, 255, 0.5);
 $black_20: rgba(0, 0, 0, 0.2);
 
 $grey-light: #ccc;
@@ -10,7 +10,6 @@ $grey-dark-2: #222;
 
 $red: red;
 
-
 // IMPORT
 @import url(https://fonts.googleapis.com/css?family=Roboto:300,400,700);
 
@@ -18,280 +17,145 @@ $red: red;
 * {
 	margin: 0;
 	padding: 0;
-    box-sizing: border-box;
-
+	box-sizing: border-box;
 }
 
 body {
 	font-family: "Roboto", sans-serif;
-    user-select: none;
+	user-select: none;
 }
-header{
-	display: flex;
-	margin: 10px 15px;
-	width:1230px;
-	text-align: center;
-	border-right:7px solid #605856;
-	border-bottom:7px solid #605856;
-	border-top:7px solid #D0CCD0;
-	border-left:7px solid #D0CCD0;
-	.logo{
-		width: 90px;
-		margin: 30px 30px 0 80px;
-		position: relative;
-		text-shadow: 3px 3px 0 #f00, -4px -2px 0 yellow, -6px -4px 0 blue;
-		img{
-			width:100% ;
-		}
-		svg{
-			position: absolute;
 
-			&#red{
-				position: absolute;
-				left: -2px;
-				top: -2px;
-				fill: red;
-				z-index:-3;
-			}
-			&#yellow{
-				position: absolute;
-				left: 2px;
-				top: -2px;
-				fill: yellow;
-				z-index:-2;
-			}
-			&#blue{
-				position: absolute;
-				left: -2px;
-				top: 2px;
-				fill: blue;
-				z-index:-1;
-			}
-		}
-	}
-	.buttonWrap{
-		margin-top: 65px;
-		button{
-			border:none;
-			margin: 0 auto;
-			display:block;
-			width:90px;
-			height:40px;
-			background-color:black;
-			border:1px solid #fff;
-			color:#fff;
-			font-size:18px;
-			font-family:'Open Sans';
-			transition:all 0.5s;
-		}
-
-	}
-}
 main {
-	width: 100%;
-	margin: 10px auto;
-	display:flex;
+	width: 900px;
+	margin: 50px auto;
 }
 
 h1 {
-	font-family: 'Overpass Mono', monospace;
-	padding: 30px 0 30px 76px;
+	padding: 50px 0 20px;
 	text-transform: uppercase;
-	text-shadow: 3px 3px 0 #f00, -4px -2px 0 yellow, -6px -4px 0 blue;
-	font-size: 4.6em;
-	margin-right: 80px;
-    
+	font-weight: 700;
+	font-size: 1.2em;
+
 	span {
 		font-weight: 300;
 	}
 }
-h2{
-	font-family: 'Overpass Mono', monospace;
-	font-size:32px;
-	width:100%;
-	text-align:center;
-}
-h3{
-	font-family: 'Overpass Mono', monospace;
-	font-size: 22px;
-	width: 100%;
-	text-align: left;
-	padding-left: 7%;
-}
-.toolbar {
-	margin:0 15px;
-	width:250px;
-	border-right:7px solid #605856;
-	border-bottom:7px solid #605856;
-	border-top:7px solid #D0CCD0;
-	border-left:7px solid #D0CCD0;
-	input{
-		display: none;
-	}
 
-	div{
-		margin:15px 0;
-		background-color: #fff;
-		&:hover{
-			-webkit-filter: invert(100%);
-			filter: invert(100%);
-			_background-color:#000;
-			cursor:pointer;
-			transition:all 0.5s;
-		}
-	}
-	&--button{
-		content:"";
-		width:60px;
-		height:60px;
-		margin:0 auto;
-		display: block;
-		border-right:4px solid #605856;
-		border-bottom:4px solid #605856;
-		border-top:4px solid #D0CCD0;
-		border-left:4px solid #D0CCD0;
-		position: relative;
-		background-repeat: no-repeat;
-		background-size:80%;
-		background-position: center;
-		&__layer{
-			background-image:url(https://image.flaticon.com/icons/svg/958/958877.svg);
-		}
-
-		&__room{
-			background-image:url(https://image.flaticon.com/icons/svg/562/562659.svg);
-		}
-		&__door{
-			background-image:url(https://image.flaticon.com/icons/svg/475/475698.svg);
-
-			&:after{
-				content:"";
-				display:block;
-				width:15px;height:15px;
-				background-image:url(https://image.flaticon.com/icons/svg/109/109526.svg);
-				background-size:80%;
-				background-position:center;
-				background-repeat:no-repeat;
-				position:absolute;
-				right:5px;
-				top:5px;
-				background-color:#fff;
-			}
-		}
-		&__window{
-			background-image:url(https://www.flaticon.com/premium-icon/icons/svg/796/796615.svg);
-			&:after{
-				content:"";
-				display:block;
-				width:15px;height:15px;
-				background-image:url(https://image.flaticon.com/icons/svg/109/109526.svg);
-				background-size:80%;
-				background-position:center;
-				background-repeat:no-repeat;
-				position:absolute;
-				right:5px;
-				top:5px;
-				background-color:#fff;
-			}
-		}
-
-		&__delete{
-			background-image:url(https://image.flaticon.com/icons/svg/446/446046.svg);
-		}
-	}
-	#newHome{
-		background-image:url(https://image.flaticon.com/icons/svg/899/899205.svg);
-	}
-	#newLayer{
-		background-image:url(https://image.flaticon.com/icons/svg/958/958877.svg);
-	}
-	&--buttonLabel{
-		font-size:18px;
-		text-align: center;
-		width:100%;
-		display:block;
-		font-weight:300;
-	}
+.toolbar,
+.buttons {
+	margin: 15px 0;
 }
 
 label {
 	margin: 0 15px 0 0;
 }
 
-.svg-wrapper {
-	width: 700px;
-	height: 500px;
-}
-
-.svg {
-	border: solid 1px $grey-light;
+.select-dialog {
+	position: absolute;
 	width: 100%;
-    height: 100%;
-    
-	ellipse {
-		display: none;
-    }
+	height: 100%;
+	background: $black_20;
+	display: none;
 
-    .door {
-        fill: $grey-dark-2; 
-    }
+	&-wrapper {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		margin-top: -45px;
+		margin-left: -75px;
+		width: 150px;
+		height: 90px;
+		padding: 10px;
+		background: $white;
+		border: solid 1px $grey-light;
+		border-radius: 3px;
+	}
 
-    .window {
-        fill: $white;
-        stroke: $red;
-        stroke-width: 1px;
-    }
-    
-	.room {
-		position: relative;
-		fill: $white_20;
-		stroke: $grey-dark-2;
-		stroke-width: 2px;
-    }
-    
-	.desc {
-		font-size: 13px;
-		font-weight: bold;
-    }
-    
-	.size {
-		font-size: 13px;
-    }
-    
-	.preview {
-		fill: $black_20;
-		stroke: $grey-dark;
-		stroke-width: 2px;
-    }
-    
-    &:hover {
-       
-		ellipse {
-			display: block;
-		}
-    }
+	input,
+	select {
+		width: 100%;
+		padding: 5px 10px;
+	}
 
-
+	:not(:last-child) {
+		margin: 0 0 10px 0;
+	}
 }
 
-.layerbar{
-	width:250px;
-	margin: 0 15px;
-	border-right:7px solid #605856;
-	border-bottom:7px solid #605856;
-	border-top:7px solid #D0CCD0;
-	border-left:7px solid #D0CCD0;
+.svg-wrapper {
+	width: 100%;
+	height: 400px;
+	position: relative;
 
-	ul{
-		list-style-type: none;
+	> svg {
+		position: absolute;
+		background-color: $white;
+		border: solid 1px $grey-light;
+		width: 100%;
+		height: 100%;
 
-		li{
-			font-family: "Roboto", sans-serif;
-			padding-left:15%;
+		ellipse {
+			display: none;
+		}
+
+		.door {
+			fill: $grey-dark-2;
+		}
+
+		.window {
+			fill: rgba(255, 255, 255, 0.8);
+		}
+
+		.room {
+			fill: $white_20;
+			stroke: $grey-dark-2;
+			stroke-width: 2px;
+		}
+
+		.desc {
+			font-size: 11px;
+			font-weight: bold;
+		}
+
+		.size {
+			font-size: 11px;
+		}
+
+		.preview,
+		.previewPolygon {
+			fill: $black_20;
+			stroke: $grey-dark;
+			stroke-width: 2px;
+		}
+
+		.previewPolygonHandle {
+			fill: transparent;
+			stroke: $grey-dark;
+			stroke-width: 2px;
+		}
+
+		&:hover {
+
+			ellipse {
+				display: block;
+			}
 		}
 	}
 }
 
-.svg-wrapper:hover{
-	cursor: cell;
+button,
+input {
+	padding: 5px 10px;
+}
+
+.layerList {
+	list-style-type: none;
+
+	&Title {
+
+	}
+
+	&Entry {
+		margin-left: 10px;
+	}
 }

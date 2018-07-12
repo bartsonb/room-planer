@@ -1,38 +1,52 @@
 // DOM
 let DOM = {
 	wrapper: document.querySelector('.svg-wrapper'),
-	svg: document.querySelector('.svg'),
+	layerlist: document.querySelector('.layerList'),
 	button: {
 		room: document.querySelector('#room-tool'),
+		polygon: document.querySelector('#polygon-tool'),
 		door: document.querySelector('#door-tool'),
 		window: document.querySelector('#window-tool'),
-		//delete: document.querySelector('#delete-tool')
+		layer: document.querySelector('.new-layer')
+	},
+	form: {
+		this: document.querySelector('form'),
+		floors: document.querySelector('.input-floors'),
+		rooms: document.querySelector('.input-rooms'),
+		submit: document.querySelector('.submit')
 	}
-
 };
 
 
 // GLOBALS
-let snap = Snap('.svg');
-
 let gridSize = 20;
 let mode;
 let tool;
 
+let floors = [];
 let rooms = [];
-
-let pointerCircle;
-let previewRectangle;
 
 let pos = {
 	x: undefined,
 	y: undefined
 };
 
-let rectangle = {
+let floor = {
+	name: undefined,
+	snap: undefined,
+  pointerCircle: undefined,
+  previewRoom: undefined,
+	previewPolygon: undefined,
+	previewPolygonHandle: undefined
+};
+
+let room = {
 	doors: 0,
 	windows: 0,
-	usage: undefined,
+	floor: undefined,
+	description: undefined,
+	direction: undefined,
+	polygon: [],
 	p1: {
 		x: undefined,
 		y: undefined
@@ -46,18 +60,41 @@ let rectangle = {
 	},
 	height: function() {
 		return Math.abs(this.p2.y - this.p1.y);
+	},
+	size: function () {
+		return this.width() * this.height() / 400;
+	},
+	polySize: function() {
+		let total = 0;
+		for ( let i = 0; i < this.polygon.length / 2 - 1; i++ ) {
+			let P1X = this.polygon[i];
+			let P1Y = this.polygon[i + 1];
+			let P2X = this.polygon[i + 2];
+			let P2Y = this.polygon[i + 3];
+
+			if (P1X < P2X && P1Y === P2Y) { total += Math.abs(P1X - P2X); }
+			if (P1X > P2X && P1Y === P2Y) { total += Math.abs(P1X - P2X); }
+
+			if (P1X === P2X && P1Y < P2Y) { total += Math.abs(P1Y - P2Y); }
+			if (P1X === P2X && P1Y > P2Y) { total += Math.abs(P1Y - P2Y); }
+		}
+		return total / 20;
+	},
+	isValid: function()  {
+		return this.width() !== 0 && this.height() !== 0;
+	},
+	getDirection: function() {
+		if (this.p1.x < this.p2.x && this.p1.y < this.p2.y) { return "top-left-bottom-right" }
+		if (this.p1.x > this.p2.x && this.p1.y > this.p2.y) { return "bottom-right-top-left" }
+		if (this.p1.x > this.p2.x && this.p1.y < this.p2.y) { return "top-right-bottom-left" }
+		if (this.p1.x < this.p2.x && this.p1.y > this.p2.y) { return "bottom-left-top-right" }
 	}
 };
 
 
 // EVENT HANDLER
-DOM.svg.addEventListener('mousemove', moveHandler);
-DOM.svg.addEventListener('mousemove', livePreview);
-
-DOM.svg.addEventListener('mousedown', mouseDownHandler);
-DOM.svg.addEventListener('mouseup', mouseUpHandler);
-
-DOM.svg.addEventListener('click', clickHandler);
+DOM.form.submit.addEventListener('click', submitHandler);
+DOM.button.layer.addEventListener('click', layerHandler);
 
 Object.keys(DOM.button).forEach( key => {
 	DOM.button[key].addEventListener('click', buttonHandler);
@@ -65,29 +102,81 @@ Object.keys(DOM.button).forEach( key => {
 
 
 // FUNCTIONS
-(function init() {
+function layerHandler() {
+	let floorCount = floors.length;
+	let floorName = window.prompt('Names des Stockwerks?').replace(/\s/g, "-").toLowerCase();
+
+	// creating a new SVG Element
+	let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+	svg.setAttribute('class', floorName);
+	svg.setAttribute('id', floorCount);
+	svg.style.zIndex = "100";
+
+	DOM.wrapper.append(svg);
+
+	floor.name = floorName;
+	floor.snap = Snap('.' + floorName);
+
+	// setting event listener
+	floor.snap.node.addEventListener('mousemove', moveHandler);
+	floor.snap.node.addEventListener('mousemove', livePreview);
+
+	floor.snap.node.addEventListener('mousedown', mouseDownHandler);
+	floor.snap.node.addEventListener('mouseup', mouseUpHandler);
+
+	floor.snap.node.addEventListener('click', clickHandler);
+
 	// set mode
 	mode = "idle";
 
-	// set tool 
-	if ( DOM.button.room.checked ) { tool = "room" };
+	// set tool
+	Object.keys(DOM.button).forEach( key => {
+		if ( DOM.button[key].checked ) { tool = key; }
+	});
 
 	// drawing grid
-	let width = DOM.svg.getBoundingClientRect().width;
-	let height = DOM.svg.getBoundingClientRect().height;
+	let width = floor.snap.node.getBoundingClientRect().width;
+	let height = floor.snap.node.getBoundingClientRect().height;
+	let lines = floor.snap.g().attr({	class: 'lines' });
 
-	let group = snap.g().attr({	class: 'lines' });
 	for (let i = gridSize; i <= width; i += gridSize) {
-		group.add(snap.line(i, 0, i, height).attr({	stroke: '#efefef' }));
-		group.add(snap.line(0, i, width, i).attr({ stroke: '#efefef' }));
+		lines.add(floor.snap.line(i, 0, i, height).attr({	stroke: '#efefef' }));
 	}
 
-	// previewRectangle
-	previewRectangle = snap.rect(-50, -50, gridSize, gridSize).attr({ class: 'preview' });
+	for (let i = gridSize; i <= height; i+= gridSize) {
+		lines.add(floor.snap.line(0, i, width, i).attr({ stroke: '#efefef' }));
+	}
 
-	// pointerCircle
-	pointerCircle = snap.ellipse(-50, -50, 2.5, 2.5).attr({ class: 'pointer' });
-})();
+	// display floor name and add new layer button
+	floor.snap.text(15, 25, floorName).attr({ class: 'layername' });
+	addLayerButton(floorName);
+
+	// create previewPolygon and previewPolygonHandle
+	floor.previewPolygon = floor.snap.polygon(-50, -50).attr({ class: 'previewPolygon' });
+	floor.previewPolygonHandle = floor.snap.circle(-50, -50, 4, 4).attr({ class: 'previewPolygonHandle' });
+
+	// create previewRoom
+	floor.previewRoom = floor.snap.rect(-50, -50, gridSize, gridSize).attr({ class: 'preview' });
+
+	// create pointerCircle
+	floor.pointerCircle = floor.snap.ellipse(-50, -50, 2.5, 2.5).attr({ class: 'pointer' });
+
+	// pushing deep copy to floors array
+	floors.push( $.extend(true, {}, floor) );
+
+	// update layerlist
+	updateLayerList();
+}
+
+function submitHandler(event) {
+	event.preventDefault();
+	let floorNames = [];
+	Object.keys(floors).forEach( key => { floorNames.push(floors[key].name) });
+
+	DOM.form.rooms.value = JSON.stringify(rooms);
+	DOM.form.floors.value = floorNames;
+	DOM.form.this.submit();
+}
 
 function buttonHandler(event) {
 	// get tool name from radiobutton id 
@@ -96,24 +185,37 @@ function buttonHandler(event) {
 
 function clickHandler() {
 	if (tool === "door") {
-		rooms.forEach(room => {
-			if (isSide(room, pos) === "vertical") { addDoor(pos, room, "vertical") }
-			if (isSide(room, pos) === "horizontal") { addDoor(pos, room, "horizontal") }
-		});
+		rooms.forEach(room => {	addDoor(pos, room, isSide(room, pos, room.direction)) });
 	}
 
 	if (tool === "window") {
-		rooms.forEach(room => {
-			if (isSide(room, pos) === "vertical") { addWindow(pos, room, "vertical") }
-			if (isSide(room, pos) === "horizontal") { addWindow(pos, room, "horizontal") }
-		});
+		rooms.forEach(room => { addWindow(pos, room, isSide(room, pos, room.direction)) });
 	}
 
-	if (tool === "delete") {
-		if (event.target.tagName !== "svg" && event.target.tagName !== "line" && event.target.tagName !== "ellipse") {
-			event.target.remove();
+	// POLYGON START DRAWING
+	if (tool === "polygon") {
+
+		// START POLYGON
+		if (mode === "idle") {
+			mode = "drawingPolygon";
+			floors[room.floor].previewPolygonHandle.attr({ cx: pos.x, cy: pos.y });
+			room.polygon.push(pos.x, pos.y);
+		}
+
+		// CONTINUE POLYGON
+		else if (mode === "drawingPolygon" && (pos.x !== room.polygon[0] || pos.y !== room.polygon[1])) {
+			room.polygon.push(pos.x, pos.y)
+		}
+
+		// END POLYGON
+		else if (mode === "drawingPolygon" && (pos.x === room.polygon[0] && pos.y === room.polygon[1])) {
+			mode = "idle";
+			floors[room.floor].previewPolygonHandle.attr({ cx: -50, cy: -50 });
+			room.polygon.push(pos.x, pos.y);
+			addPolygon(room.polygon);
 		}
 	}
+
 }
 
 function moveHandler(event) {
@@ -123,143 +225,209 @@ function moveHandler(event) {
 	pos.y = Math.round((event.y - this.getBoundingClientRect().y) / gridSize) * gridSize;
 
 	if (mode === "drawing") {
-		rectangle.p2.x = pos.x;
-		rectangle.p2.y = pos.y;
+		room.p2.x = pos.x;
+		room.p2.y = pos.y;
 	}
 
+	// setting floor in temporary room
+	room.floor = parseInt(this.getAttribute('id'));
+
 	// updating position of the pointercircle
-	pointerCircle.attr({ cx: pos.x, cy: pos.y });
+	floors[room.floor].pointerCircle.attr({ cx: pos.x, cy: pos.y });
 }
 
 function livePreview() {
 	if (mode === "drawing") {
-		if (isValidRectangle(rectangle)) {
-			// top left -> bottom right
-			if (rectangle.p1.x < rectangle.p2.x && rectangle.p1.y < rectangle.p2.y) {
-				previewRectangle.attr({
-					x: rectangle.p1.x,
-					y: rectangle.p1.y,
-					width: rectangle.p2.x - rectangle.p1.x,
-					height: rectangle.p2.y - rectangle.p1.y
-				});
-			}
-			// bottom right -> top left
-			if (rectangle.p1.x > rectangle.p2.x && rectangle.p1.y > rectangle.p2.y) {
-				previewRectangle.attr({
-					x: rectangle.p2.x,
-					y: rectangle.p2.y,
-					width: rectangle.p1.x - rectangle.p2.x,
-					height: rectangle.p1.y - rectangle.p2.y
-				});
-			}
-			// top right -> bottom left
-			if (rectangle.p1.x > rectangle.p2.x && rectangle.p1.y < rectangle.p2.y) {
-				previewRectangle.attr({
-					x: rectangle.p2.x,
-					y: rectangle.p1.y,
-					width: rectangle.p1.x - rectangle.p2.x,
-					height: rectangle.p2.y - rectangle.p1.y
-				});
-			}
-			// bottom left -> top right
-			if (rectangle.p1.x < rectangle.p2.x && rectangle.p1.y > rectangle.p2.y) {
-				previewRectangle.attr({
-					x: rectangle.p1.x,
-					y: rectangle.p2.y,
-					width: rectangle.p2.x - rectangle.p1.x,
-					height: rectangle.p1.y - rectangle.p2.y
-				});
+		if ( room.isValid() ) {
+			switch ( room.getDirection() ) {
+				case "top-left-bottom-right":
+					floors[room.floor].previewRoom.attr({ x: room.p1.x, y: room.p1.y, width: room.width(), height: room.height() });
+					break;
+				case "bottom-right-top-left":
+					floors[room.floor].previewRoom.attr({ x: room.p2.x, y: room.p2.y, width: room.width(), height: room.height() });
+					break;
+				case "top-right-bottom-left":
+					floors[room.floor].previewRoom.attr({ x: room.p2.x, y: room.p1.y, width: room.width(), height: room.height() });
+					break;
+				case "bottom-left-top-right":
+					floors[room.floor].previewRoom.attr({ x: room.p1.x, y: room.p2.y, width: room.width(), height: room.height() });
+					break;
 			}
 		} else {
-			previewRectangle.attr({
-				x: -500,
-				y: -500
-			});
+			floors[room.floor].previewRoom.attr({x: -500, y: -500});
 		}
 	} else {
-		previewRectangle.attr({
-			x: -500,
-			y: -500
-		});
+		floors[room.floor].previewRoom.attr({x: -500,	y: -500});
+	}
+
+	// UPDATE PREVIEW POLYGON
+	if (mode === "drawingPolygon") {
+		if (mode === "drawingPolygon") {
+			floors[room.floor].previewPolygon.attr({ points: room.polygon + "," + pos.x + "," + pos.y });
+		} else {
+			floors[room.floor].previewPolygon.attr({ points: [-500, -500] });
+		}
+	} else {
+		floors[room.floor].previewPolygon.attr({ points: [-500, -500] });
 	}
 }
 
-function mouseDownHandler(event) {
-	drawRectangle("start", pos);
+function mouseDownHandler() {
+	drawroom("start", pos);
 }
 
-function mouseUpHandler(event) {
-	drawRectangle("stop", pos);
+function mouseUpHandler() {
+	drawroom("stop", pos);
 }
 
-function drawRectangle(action, pos) {
+function drawroom(action, pos) {
 	if (tool === "room") {
 		if (action === "start") {
 			mode = "drawing";
-			rectangle.p1.x = pos.x;
-			rectangle.p1.y = pos.y;
+			room.p1.x = pos.x;
+			room.p1.y = pos.y;
 		}
 
 		if (action === "stop") {
 			mode = "idle";
-			rectangle.p2.x = pos.x;
-			rectangle.p2.y = pos.y;
+			room.p2.x = pos.x;
+			room.p2.y = pos.y;
 
-			// mode the rectangle
-			if (isValidRectangle(rectangle)) {
-				if (rectangle.p1.x < rectangle.p2.x && rectangle.p1.y < rectangle.p2.y) {
-					let desc = window.prompt("Zweck des Zimmers?");
-					let size = (rectangle.p2.x - rectangle.p1.x) * (rectangle.p2.y - rectangle.p1.y) / 400;
-
-					let roomElement = snap.rect(rectangle.p1.x, rectangle.p1.y, rectangle.p2.x - rectangle.p1.x, rectangle.p2.y - rectangle.p1.y).attr({
-						class: 'room'
-					});
-					let descElement = snap.text(rectangle.p1.x + 5, rectangle.p1.y + 15, desc).attr({
-						class: 'desc'
-					});
-					let sizeElement = snap.text(rectangle.p1.x + 5, rectangle.p1.y + 30, size + "qm").attr({
-						class: 'size'
-					});
-
-					let group = snap.g(roomElement, descElement, sizeElement).attr({
-						id: rooms.length
-					});
-
-					rectangle.usage = desc;
-					// pusing deep copy of rectangle into rooms array
-					rooms.push(JSON.parse(JSON.stringify(rectangle)));
-				}
-				if (rectangle.p1.x > rectangle.p2.x && rectangle.p1.y > rectangle.p2.y) {
-					snap.rect(rectangle.p2.x, rectangle.p2.y, rectangle.p1.x - rectangle.p2.x, rectangle.p1.y - rectangle.p2.y).addClass('room');
-				}
-				if (rectangle.p1.x > rectangle.p2.x && rectangle.p1.y < rectangle.p2.y) {
-					snap.rect(rectangle.p2.x, rectangle.p1.y, rectangle.p1.x - rectangle.p2.x, rectangle.p2.y - rectangle.p1.y).addClass('room');
-				}
-				if (rectangle.p1.x < rectangle.p2.x && rectangle.p1.y > rectangle.p2.y) {
-					snap.rect(rectangle.p1.x, rectangle.p2.y, rectangle.p2.x - rectangle.p1.x, rectangle.p1.y - rectangle.p2.y).addClass('room');
-				}
-			}
+			if ( room.isValid() ) { addRoom( room.getDirection() ) }
 		}
 	}
 }
 
-function addDoor(pos, room, rotation) {
-	if (rotation === "vertical") { room.doors += 1; snap.rect(pos.x - 5, pos.y - 3, 10, 6).addClass('door'); }
-	if (rotation === "horizontal") { room.doors += 1; snap.rect(pos.x - 5, pos.y - 3, 10, 6).addClass('door').transform('r90'); }
-}
+function isSide(room, pos, direction) {
+	switch (direction) {
+		case "top-left-bottom-right":
+			if (pos.x > room.p1.x && pos.x < room.p2.x && ( pos.y === room.p1.y || pos.y === room.p2.y ) ) { return "vertical" }
+			if (pos.y > room.p1.y && pos.y < room.p2.y && ( pos.x === room.p1.x || pos.x === room.p2.x ) ) { return "horizontal"; }
+			break;
 
-function addWindow(pos, room, rotation) {
-	if (rotation === "vertical") { room.windows += 1; snap.rect(pos.x - 5, pos.y - 3, 10, 6).addClass('window'); }
-	if (rotation === "horizontal") { room.window += 1; snap.rect(pos.x - 5, pos.y - 3, 10, 6).addClass('window').transform('r90'); }
-}
+		case "bottom-right-top-left":
+			if (pos.x < room.p1.x && pos.x > room.p2.x && ( pos.y === room.p1.y || pos.y === room.p2.y ) ) { return "vertical" }
+			if (pos.y < room.p1.y && pos.y > room.p2.y && ( pos.x === room.p1.x || pos.x === room.p2.x ) ) { return "horizontal"; }
+			break;
 
-function isSide(room, pos) {
-	if (pos.x > room.p1.x && pos.x < room.p2.x && ( pos.y === room.p1.y || pos.y === room.p2.y ) ) { return "vertical" }
-	if (pos.y > room.p1.y && pos.y < room.p2.y && ( pos.x === room.p1.x || pos.x === room.p2.x ) ) { return "horizontal"; }
+		case "top-right-bottom-left":
+			if (pos.x < room.p1.x && pos.x > room.p2.x && ( pos.y === room.p1.y || pos.y === room.p2.y ) ) { return "vertical" }
+			if (pos.y > room.p1.y && pos.y < room.p2.y && ( pos.x === room.p1.x || pos.x === room.p2.x ) ) { return "horizontal"; }
+			break;
+
+		case "bottom-left-top-right":
+			if (pos.x > room.p1.x && pos.x < room.p2.x && ( pos.y === room.p1.y || pos.y === room.p2.y ) ) { return "vertical" }
+			if (pos.y < room.p1.y && pos.y > room.p2.y && ( pos.x === room.p1.x || pos.x === room.p2.x ) ) { return "horizontal"; }
+			break;
+	}
 
 	return false;
 }
 
-function isValidRectangle(rectangle) {
-	return rectangle.p1.x !== rectangle.p2.x || rectangle.p1.y !== rectangle.p2.y;
+function addDoor(pos, room, rotation) {
+	if (rotation === "vertical") { room.doors += 1; floors[room.floor].snap.rect(pos.x - 5, pos.y - 3, 10, 6).addClass('door'); }
+	if (rotation === "horizontal") { room.doors += 1; floors[room.floor].snap.rect(pos.x - 5, pos.y - 3, 10, 6).addClass('door').transform('r90'); }
+}
+
+function addWindow(pos, room, rotation) {
+	if (rotation === "vertical") { room.windows += 1; floors[room.floor].snap.rect(pos.x - 5, pos.y - 3, 10, 6).addClass('window'); }
+	if (rotation === "horizontal") { room.windows += 1; floors[room.floor].snap.rect(pos.x - 5, pos.y - 3, 10, 6).addClass('window').transform('r90'); }
+}
+
+function addRoom(direction) {
+	room.description = window.prompt("Zweck des Zimmers?");
+	room.direction = room.getDirection();
+	let roomElement, descElement, sizeElement;
+
+	switch (direction) {
+		case "top-left-bottom-right":
+			roomElement = floors[room.floor].snap.rect(room.p1.x, room.p1.y, room.p2.x - room.p1.x, room.p2.y - room.p1.y).attr({class: 'room'});
+			descElement = floors[room.floor].snap.text(room.p1.x + 5, room.p1.y + 15, room.description).attr({class: 'desc'});
+			sizeElement = floors[room.floor].snap.text(room.p1.x + 5, room.p1.y + 28, room.size() + "qm").attr({class: 'size'});
+			break;
+
+		case "bottom-right-top-left":
+			roomElement = floors[room.floor].snap.rect(room.p2.x, room.p2.y, room.p1.x - room.p2.x, room.p1.y - room.p2.y).addClass('room');
+			descElement = floors[room.floor].snap.text(room.p2.x + 5, room.p2.y + 15, room.description).attr({class: 'desc'});
+			sizeElement = floors[room.floor].snap.text(room.p2.x + 5, room.p2.y + 28, room.size() + "qm").attr({class: 'size'});
+			break;
+
+		case "top-right-bottom-left":
+			roomElement = floors[room.floor].snap.rect(room.p2.x, room.p1.y, room.p1.x - room.p2.x, room.p2.y - room.p1.y).addClass('room'); 			descElement = floors[room.floor].snap.text(room.p2.x + 5, room.p1.y + 15, room.description).attr({class: 'desc'});
+			sizeElement = floors[room.floor].snap.text(room.p2.x + 5, room.p1.y + 28, room.size() + "qm").attr({class: 'size'});
+			break;
+
+		case "bottom-left-top-right":
+			roomElement = floors[room.floor].snap.rect(room.p1.x, room.p2.y, room.p2.x - room.p1.x, room.p1.y - room.p2.y).addClass('room');
+			descElement = floors[room.floor].snap.text(room.p1.x + 5, room.p2.y + 15, room.description).attr({class: 'desc'});
+			sizeElement = floors[room.floor].snap.text(room.p1.x + 5, room.p2.y + 28, room.size() + "qm").attr({class: 'size'});
+			break;
+	}
+
+
+	floors[room.floor].snap.g(roomElement, descElement, sizeElement).attr({id: rooms.length});
+
+	// pusing deep copy of room into rooms array
+	rooms.push( $.extend(true, {}, room) );
+
+	// update layerlist
+	updateLayerList();
+}
+
+function addPolygon(coordinates) {
+	room.description = window.prompt("Zweck des Zimmers?");
+	let roomElement, descElement, sizeElement;
+
+	roomElement = floors[room.floor].snap.polyline(coordinates).attr({ class: 'room' });
+	descElement = floors[room.floor].snap.text(room.polygon[0] + 5, room.polygon[1] + 15, room.description).attr({class: 'desc'});
+	sizeElement = floors[room.floor].snap.text(room.polygon[0] + 5, room.polygon[1] + 28, room.polySize() + "qm").attr({class: 'size'});
+
+	floors[room.floor].snap.g(roomElement, descElement, sizeElement).attr({id: rooms.length});
+	room.polygon = [];
+
+	// pusing deep copy of room into rooms array
+	rooms.push( $.extend(true, {}, room) );
+
+	// update layerlist
+	updateLayerList();
+}
+
+function addLayerButton(floorname) {
+	let btn = document.createElement('button');
+	btn.innerText = floorname;
+	btn.setAttribute('class', 'switch-layer');
+	document.querySelector('.buttons').append(btn);
+	btn.addEventListener('click', switchLayers);
+}
+
+function switchLayers() {
+	let svgs = document.querySelectorAll('svg');
+	let btnText = event.target.innerText;
+
+	svgs.forEach( svg => svg.style.zIndex = "0" );
+	svgs.forEach( svg => {
+		if ( svg.getAttribute('class') === btnText ) { svg.style.zIndex = "100"; }
+	});
+}
+
+
+function updateLayerList() {
+	// CLEAR LIST
+	DOM.layerlist.innerHTML = "";
+
+	floors.forEach( (floor, index) => {
+		let newListTitle = document.createElement('li');
+		newListTitle.setAttribute('class', 'layerListTitle');
+		newListTitle.innerHTML = "<b>" + floor.name + "</b>";
+		DOM.layerlist.append(newListTitle);
+
+		rooms.forEach( room => {
+			if ( room.floor === index ) {
+				let newListEntry = document.createElement('li');
+				newListEntry.setAttribute('class', 'layerListEntry');
+				newListEntry.innerText = room.description;
+				DOM.layerlist.append(newListEntry);
+			}
+		});
+	});
 }
