@@ -1,4 +1,116 @@
+@import url("https://fonts.googleapis.com/css?family=Open+Sans|Overpass+Mono");
 @import url(https://fonts.googleapis.com/css?family=Roboto:300,400,700);
+h1 {
+  font-family: 'Overpass Mono', monospace;
+  padding: 50px 0 20px;
+  text-transform: uppercase;
+  font-size: 2.2em; }
+  h1 span {
+    font-weight: 300; }
+
+h2 {
+  font-family: 'Overpass Mono';
+  font-size: 32px;
+  width: 100%;
+  text-align: center; }
+
+header {
+  height: 10vh; }
+
+main {
+  display: flex; }
+  main .toolbar {
+    padding: 2%;
+    text-align: center; }
+
+.hasBorder {
+  border: 7px solid #D0CCD0;
+  border-bottom-color: #605856;
+  border-right-color: #605856;
+  display: flex;
+  flex-direction: column; }
+
+.toolbar input, .toolbar button {
+  display: none; }
+
+.toolbar div {
+  margin: 15px auto;
+  background-color: #fff; }
+  .toolbar div:hover {
+    -webkit-filter: invert(100%);
+    filter: invert(100%);
+    _background-color: #000;
+    cursor: pointer;
+    transition: all 0.5s; }
+
+.toolbar--button {
+  content: "";
+  width: 60px;
+  height: 60px;
+  margin: 0 auto;
+  display: block;
+  border-right: 4px solid #605856;
+  border-bottom: 4px solid #605856;
+  border-top: 4px solid #D0CCD0;
+  border-left: 4px solid #D0CCD0;
+  position: relative;
+  background-repeat: no-repeat;
+  background-size: 80%;
+  background-position: center; }
+  .toolbar--button:active {
+    border: 3px solid pink; }
+  .toolbar--button__layer {
+    background-image: url(https://image.flaticon.com/icons/svg/958/958877.svg); }
+  .toolbar--button__room {
+    background-image: url(https://image.flaticon.com/icons/svg/562/562659.svg); }
+  .toolbar--button__polygon {
+    background-image: url(https://image.flaticon.com/icons/svg/838/838585.svg); }
+  .toolbar--button__door {
+    background-image: url(https://image.flaticon.com/icons/svg/475/475698.svg); }
+    .toolbar--button__door:after {
+      content: "";
+      display: block;
+      width: 15px;
+      height: 15px;
+      background-image: url(https://image.flaticon.com/icons/svg/109/109526.svg);
+      background-size: 80%;
+      background-position: center;
+      background-repeat: no-repeat;
+      position: absolute;
+      right: 5px;
+      top: 5px;
+      background-color: #fff; }
+  .toolbar--button__window {
+    background-image: url(https://www.flaticon.com/premium-icon/icons/svg/796/796615.svg); }
+    .toolbar--button__window:after {
+      content: "";
+      display: block;
+      width: 15px;
+      height: 15px;
+      background-image: url(https://image.flaticon.com/icons/svg/109/109526.svg);
+      background-size: 80%;
+      background-position: center;
+      background-repeat: no-repeat;
+      position: absolute;
+      right: 5px;
+      top: 5px;
+      background-color: #fff; }
+  .toolbar--button__delete {
+    background-image: url(https://image.flaticon.com/icons/svg/446/446046.svg); }
+
+.toolbar #newHome {
+  background-image: url(https://image.flaticon.com/icons/svg/899/899205.svg); }
+
+.toolbar #newLayer {
+  background-image: url(https://image.flaticon.com/icons/svg/958/958877.svg); }
+
+.toolbar--buttonLabel {
+  font-size: 18px;
+  text-align: center;
+  width: 100%;
+  display: block;
+  font-weight: 300; }
+
 * {
   margin: 0;
   padding: 0;
@@ -9,16 +121,8 @@ body {
   user-select: none; }
 
 main {
-  width: 900px;
+  width: 100%;
   margin: 50px auto; }
-
-h1 {
-  padding: 50px 0 20px;
-  text-transform: uppercase;
-  font-weight: 700;
-  font-size: 1.2em; }
-  h1 span {
-    font-weight: 300; }
 
 .toolbar,
 .buttons {
@@ -53,7 +157,7 @@ label {
     margin: 0 0 10px 0; }
 
 .svg-wrapper {
-  width: 100%;
+  width: 900px;
   height: 400px;
   position: relative; }
   .svg-wrapper > svg {

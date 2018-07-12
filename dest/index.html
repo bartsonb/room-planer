@@ -12,22 +12,46 @@
 </head>
 
 <body>
+<header class="hasBorder">
+	<h1>Draw your house</h1>
+</header>
 <main>
 
-	<div class="toolbar">
-		<input type="radio" id="room-tool" name="tool" value="Room Tool" checked/>
-		<label for="room-tool">Room Tool</label>
-		<input type="radio" id="polygon-tool" name="tool" value="Polygon Tool" />
-		<label for="polygon-tool">Polygon Tool</label>
-		<input type="radio" id="door-tool" name="tool" value="Door Tool"/>
-		<label for="door-tool">Door Tool</label>
-		<input type="radio" id="window-tool" name="tool" value="Window Tool"/>
-		<label for="window-tool">Window Tool</label>
+	<div class="toolbar hasBorder">
+		<h2>Toolbox</h2>
+		<div class="buttons ">
+			<button class="new-layer" id="layer-tool" class="toolbar--button"></button>
+			<label for="layer-tool" class="toolbar--button toolbar--button__layer"></label>
+			<label for="layer-tool" class="toolbar--buttonLabel">New Layer</label>
+		</div>
+		<div>
+			<input type="radio" id="room-tool" name="tool" value="Room Tool" checked/>
+			<label for="room-tool" class="toolbar--button toolbar--button__room"></label>
+			<label for="room-tool" class="toolbar--buttonLabel">Room Tool</label>
+		</div>
+		<div>
+			<input type="radio" id="polygon-tool" name="tool" value="Polygon Tool" />
+			<label for="polygon-tool" class="toolbar--button toolbar--button__polygon"></label>
+			<label for="polygon-tool">Polygon Tool</label>
+		</div>
+		<div>
+			<input type="radio" id="door-tool" name="tool" value="Door Tool"/>
+			<label for="door-tool" class="toolbar--button toolbar--button__door"></label>
+			<label for="door-tool" class="toolbar--buttonLabel">Door Tool</label>
+		</div>
+		<div>
+			<input type="radio" id="window-tool" name="tool" value="Window Tool"/>
+			<label for="window-tool" class="toolbar--button toolbar--button__window"></label>
+			<label for="window-tool" class="toolbar--buttonLabel">Window Tool</label>
+		</div>
+		<div>
+			<input type="radio" id="delete-tool" name="tool" value="Delete Tool"/>
+			<label for="delete-tool" class="toolbar--button toolbar--button__delete"></label>
+			<label for="delete-tool" class="toolbar--buttonLabel">Delete Tool</label>
+		</div>
 	</div>
 
-	<div class="buttons">
-		<button class="new-layer">New Layer</button>
-	</div>
+
 
 	<div class="svg-wrapper"></div>
 
@@ -38,11 +62,19 @@
 			<input type="submit" value="Senden" class="submit">
 		</form>
 	</div>
+	<section class="box--hasBorder">
+		<h2>Layerbox</h2>
+		<div class="layerbuttons">
+			<h3>Layer</h3>
 
-	<ul class="layerList">
+		</div>
+		<div class="layerList">
+			<h3>All your Content</h3>
+	<ul class="layerList ">
 
 	</ul>
-
+		</div>
+	</section>
 </main>
 
 <script src="js/app.js"></script>

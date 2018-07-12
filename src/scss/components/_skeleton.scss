@@ -1,0 +1,29 @@
+$border-shadow: #605856;
+$border-light:#D0CCD0;
+
+
+
+header{
+  height:10vh;
+}
+
+main{
+  display: flex;
+
+.toolbar{
+  padding:2%;
+  text-align: center;
+}
+
+}
+
+
+
+.hasBorder{
+  border:7px solid $border-light;
+  border-bottom-color: $border-shadow ;
+  border-right-color: $border-shadow ;
+
+  display: flex;
+  flex-direction: column;
+}

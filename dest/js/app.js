@@ -393,11 +393,14 @@ function addPolygon(coordinates) {
 }
 
 function addLayerButton(floorname) {
-	let btn = document.createElement('button');
+	const layerBox = document.querySelector('.layerbuttons');
+	console.log(layerBox);
+    let btn = document.createElement('button');
 	btn.innerText = floorname;
 	btn.setAttribute('class', 'switch-layer');
 	document.querySelector('.buttons').append(btn);
 	btn.addEventListener('click', switchLayers);
+    let newel = layerBox.appendChild(btn);
 }
 
 function switchLayers() {

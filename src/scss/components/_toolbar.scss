@@ -1,10 +1,18 @@
 .toolbar{
-  input{
+  input, button{
   display: none;
 }
 
 div{
-  margin:15px 0;
+  margin:15px auto;
+  background-color: #fff;
+  &:hover{
+    -webkit-filter: invert(100%);
+    filter: invert(100%);
+    _background-color:#000;
+    cursor:pointer;
+    transition:all 0.5s;
+  }
 }
 &--button{
   content:"";
@@ -20,8 +28,20 @@ div{
   background-repeat: no-repeat;
   background-size:80%;
   background-position: center;
+
+  &:active{
+    border:3px solid pink;
+  }
+
+  &__layer{
+    background-image:url(https://image.flaticon.com/icons/svg/958/958877.svg);
+
+  }
   &__room{
     background-image:url(https://image.flaticon.com/icons/svg/562/562659.svg);
+  }
+  &__polygon{
+    background-image: url(https://image.flaticon.com/icons/svg/838/838585.svg);
   }
   &__door{
     background-image:url(https://image.flaticon.com/icons/svg/475/475698.svg);
