@@ -15,8 +15,8 @@
     display: flex;
     justify-content: center;
     align-self: center;
-    &--off{
-      display: block;
+    &--on{
+      display: flex;
     }
     &--off{
       display: none;
@@ -33,7 +33,6 @@
   }
   &--box{
     width:60%;
-    height:70%;
     background-color: #fff;
     align-self: center;
     padding: 4em 0;
@@ -47,6 +46,7 @@
 
       ul{
         list-style-type: none;
+
         li{
           font-family: "Roboto", sans-serif;
           font-size: 1.3rem;
@@ -65,6 +65,11 @@
     li{
       font-family: "Roboto", sans-serif;
       font-size: 1.3rem;
+			margin-bottom: 1.3rem;
+
+			ul {
+				margin: 1rem 0 0 1rem;
+			}
     }
   }
   h2{
@@ -79,7 +84,7 @@
 
   &--close{
     border:none;
-    margin: 0 auto;
+    margin: 0 auto 2rem auto;
     display:block;
     width:90px;
     height:40px;

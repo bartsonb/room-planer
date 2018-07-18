@@ -13,23 +13,23 @@
 
 <body>
 <section class="contentWrap">
-	<section class="help helpWrap helpWrap--off ">
+	<section class="help helpWrap helpWrap--on ">
 		<div class="help--box hasBorder">
 			<h2>How it works</h2>
 			<ul>
-				<li><h5>Step 1:</h5> Klick on Layer to create a new Layer</li>
-				<li><h5>Step 2:</h5> KLick on Room or Polygon Tool to create a new room.
+				<li><h5>Step 1:</h5> Click on Layer to create a new Layer</li>
+				<li><h5>Step 2:</h5> Click on Room or Polygon Tool to create a new room.
 					<ul>
 						<li>
-							<b>Room Tool:</b> Just click and pull a rectangle. Name it.
+							<b>Room Tool:</b> <br/>Just click and pull a rectangle. Name it.
 						</li>
 						<li>
-							<b>Polygon Tool</b>	 Tool: click as much as you want until you finish it by clicking on the grey circle.
+							<b>Polygon Tool:</b> <br/> Click as much as you want until you finish it by clicking on the grey circle.
 						</li>
 					</ul>
 				</li>
-				<li><h5>Step 3: </h5>You can add Doors and Windows by setting their start and end points on the walls.</li>
-				<li> <h5>Step 4: </h5> finish it!</li>
+				<li><h5>Step 3: </h5>You can add doors and windows by clicking the outter wall of a room.</li>
+				<li><h5>Step 4: </h5>Finish it!</li>
 			</ul>
 
 			<button class="help--close">close</button>
@@ -255,9 +255,7 @@
 
 		<button class="buttonWrap--help"> Help </button>
 
-		<form action="http://localhost:3000/post" method="POST">
-			<input type="hidden" name="floors" class="input-floors">
-			<input type="hidden" name="rooms" class="input-rooms">
+		<form>
 			<input type="submit" value="Senden" class="submit">
 		</form>
 	</div>
@@ -266,75 +264,42 @@
 <main>
 
 	<div class="toolbar hasBorder">
-		<h2>Toolbox</h2>
+		<h2>Tools</h2>
 		<div class="buttons ">
 			<button class="new-layer" id="layer-tool" class="toolbar--button"></button>
 			<label for="layer-tool" class="toolbar--button toolbar--button__layer"></label>
-			<label for="layer-tool" class="toolbar--buttonLabel">New Layer</label>
 		</div>
 		<div>
 			<input type="radio" id="room-tool" name="tool" value="Room Tool" />
 			<label for="room-tool" class="toolbar--button toolbar--button__room"></label>
-			<label for="room-tool" class="toolbar--buttonLabel">Room Tool</label>
 		</div>
 		<div>
 			<input type="radio" id="polygon-tool" name="tool" value="Polygon Tool" />
 			<label for="polygon-tool" class="toolbar--button toolbar--button__polygon"></label>
-			<label for="polygon-tool"  class="toolbar--buttonLabel">Polygon Tool</label>
 		</div>
 		<div>
 			<input type="radio" id="door-tool" name="tool" value="Door Tool"/>
 			<label for="door-tool" class="toolbar--button toolbar--button__door"></label>
-			<label for="door-tool" class="toolbar--buttonLabel">Door Tool</label>
 		</div>
 		<div>
 			<input type="radio" id="window-tool" name="tool" value="Window Tool"/>
 			<label for="window-tool" class="toolbar--button toolbar--button__window"></label>
-			<label for="window-tool" class="toolbar--buttonLabel">Window Tool</label>
 		</div>
 
 	</div>
 
 
 
-	<div class="svg-wrapper">
-		<section class="aufforderung helpWrap helpWrap--first hasBorder">
-			<h1 class="">Start with a new Layer here!</h1>
-			<div class="help--box  help--box--first">
-				<h2>How it works</h2>
-				<ul>
-					<li><h5>Step 1:</h5> Klick on Layer to create a new Layer</li>
-					<li><h5>Step 2:</h5> KLick on Room or Polygon Tool to create a new room.
-						<ul>
-							<li>
-								<b>Room Tool:</b> Just click and pull a rectangle. Name it.
-							</li>
-							<li>
-								<b>Polygon Tool</b>	 Tool: click as much as you want until you finish it by clicking on the grey circle.
-							</li>
-						</ul>
-					</li>
-					<li><h5>Step 3: </h5>You can add Doors and Windows by setting their start and end points on the walls.</li>
-					<li> <h5>Step 4: </h5> finish it!</li>
-				</ul>
-
-			</div>
-		</section>
-
-	</div>
+	<div class="svg-wrapper"></div>
 
 
 	<section class="hasBorder layerBar">
 		<h2>Layerbox</h2>
-		<div class="layerbuttons">
-			<h3>Layer</h3>
 
-		</div>
 		<div class="layerList">
-			<h3>All your Content</h3>
-	<ul class="layerList ">
+			<ul class="layerList ">
 
-	</ul>
+			</ul>
 		</div>
 	</section>
 </main>

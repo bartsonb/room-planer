@@ -1,6 +1,6 @@
 .toolbar {
-  width: 13.5em;
-  padding: 2%;
+  width: 8em;
+  padding: 1rem;
   text-align: center;
 
 
@@ -20,13 +20,6 @@
 div {
   margin: 15px auto;
   background-color: #fff;
-  &:hover {
-    -webkit-filter: invert(100%);
-    filter: invert(100%);
-    _background-color: #000;
-    cursor: pointer;
-    transition: all 0.5s;
-  }
 }
 
 &--button {
@@ -44,7 +37,11 @@ div {
   background-size: 80%;
   background-position: center;
 
-
+	&:hover {
+		background-color: #ccc;
+		cursor: pointer;
+		transition: all 0.5s;
+	}
 
   &:active {
     border: 3px solid pink;

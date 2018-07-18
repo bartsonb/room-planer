@@ -154,7 +154,6 @@ function layerHandler() {
 
 	// display floor name and add new layer button
 	floor.snap.text(15, 25, floorName).attr({ class: 'layername' });
-	addLayerButton(floorName);
 
 	// create previewPolygon and previewPolygonHandle
 	floor.previewPolygon = floor.snap.polygon(-50, -50).attr({ class: 'previewPolygon' });
@@ -175,12 +174,21 @@ function layerHandler() {
 
 function submitHandler(event) {
 	event.preventDefault();
+	let buildingName = window.prompt("Was ist der Gebäudename?");
 	let floorNames = [];
 	Object.keys(floors).forEach( key => { floorNames.push(floors[key].name) });
 
-	DOM.form.rooms.value = JSON.stringify(rooms);
-	DOM.form.floors.value = floorNames;
-	DOM.form.this.submit();
+	fetch("http://localhost:3000/post",
+			{
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json'
+				},
+				method: "POST",
+				body: JSON.stringify({rooms: rooms, floors: floors, buildingName: buildingName})
+			})
+	.then(function(res){ console.log(res) })
+	.catch(function(res){ console.log(res) });
 }
 
 function buttonHandler(event) {
@@ -358,7 +366,8 @@ function addRoom(direction) {
 			break;
 
 		case "top-right-bottom-left":
-			roomElement = floors[room.floor].snap.rect(room.p2.x, room.p1.y, room.p1.x - room.p2.x, room.p2.y - room.p1.y).addClass('room'); 			descElement = floors[room.floor].snap.text(room.p2.x + 5, room.p1.y + 15, room.description).attr({class: 'desc'});
+			roomElement = floors[room.floor].snap.rect(room.p2.x, room.p1.y, room.p1.x - room.p2.x, room.p2.y - room.p1.y).addClass('room');
+			descElement = floors[room.floor].snap.text(room.p2.x + 5, room.p1.y + 15, room.description).attr({class: 'desc'});
 			sizeElement = floors[room.floor].snap.text(room.p2.x + 5, room.p1.y + 28, room.size() + "qm").attr({class: 'size'});
 			break;
 
@@ -371,6 +380,7 @@ function addRoom(direction) {
 
 
 	floors[room.floor].snap.g(roomElement, descElement, sizeElement).attr({id: rooms.length});
+	room.qm = room.size();
 
 	// pusing deep copy of room into rooms array
 	rooms.push( $.extend(true, {}, room) );
@@ -398,28 +408,6 @@ function addPolygon(coordinates) {
 	updateLayerList();
 }
 
-function addLayerButton(floorname) {
-	const layerBox = document.querySelector('.layerbuttons');
-	console.log(layerBox);
-    let btn = document.createElement('button');
-	btn.innerText = floorname;
-	btn.setAttribute('class', 'switch-layer');
-	document.querySelector('.buttons').append(btn);
-	btn.addEventListener('click', switchLayers);
-    let newel = layerBox.appendChild(btn);
-}
-
-function switchLayers() {
-	let svgs = document.querySelectorAll('svg');
-	let btnText = event.target.innerText;
-
-	svgs.forEach( svg => svg.style.zIndex = "0" );
-	svgs.forEach( svg => {
-		if ( svg.getAttribute('class') === btnText ) { svg.style.zIndex = "100"; }
-	});
-}
-
-
 function updateLayerList() {
 	// CLEAR LIST
 	DOM.layerlist.innerHTML = "";
@@ -428,6 +416,7 @@ function updateLayerList() {
 		let newListTitle = document.createElement('li');
 		newListTitle.setAttribute('class', 'layerListTitle');
 		newListTitle.innerHTML = "<b>" + floor.name + "</b>";
+		newListTitle.addEventListener('click', switchLayers);
 		DOM.layerlist.append(newListTitle);
 
 		rooms.forEach( room => {
@@ -438,5 +427,15 @@ function updateLayerList() {
 				DOM.layerlist.append(newListEntry);
 			}
 		});
+	});
+}
+
+function switchLayers() {
+	let svgs = document.querySelectorAll('svg');
+	let btnText = event.target.innerText;
+
+	svgs.forEach( svg => svg.style.zIndex = "0" );
+	svgs.forEach( svg => {
+		if ( svg.getAttribute('class') === btnText ) { svg.style.zIndex = "100"; }
 	});
 }
