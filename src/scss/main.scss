@@ -1,7 +1,9 @@
 @import 'components/font';
 @import 'components/skeleton';
 @import 'components/toolbar';
-
+@import 'components/header';
+@import 'components/helpWrap';
+@import 'components/layerBar.scss';
 
 // COLORS
 $white: white;
@@ -30,18 +32,14 @@ $red: red;
 body {
 	font-family: "Roboto", sans-serif;
 	user-select: none;
+	background: url(/img/bgPattern.jpg) repeat;
+	background-size: 24%;
 }
 
 main {
-	width: 100%;
-	margin: 50px auto;
+	width: 100%;//eventuell 900px
 }
 
-
-.toolbar,
-.buttons {
-	margin: 15px 0;
-}
 
 label {
 	margin: 0 15px 0 0;
@@ -83,6 +81,7 @@ label {
 	width: 900px;
 	height: 400px;
 	position: relative;
+	margin-top: 15px;
 
 	> svg {
 		position: absolute;
