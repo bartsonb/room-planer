@@ -98,10 +98,19 @@ Object.keys(DOM.button).forEach( key => {
 
 
 // FUNCTIONS
+
+function removeText(){
+    var textThatNeedsToBeRemoved = document.querySelector(".aufforderung");
+	if(textThatNeedsToBeRemoved !== null){
+    textThatNeedsToBeRemoved.remove();
+
+	}
+}
+
 function layerHandler() {
 	let floorCount = floors.length;
 	let floorName = window.prompt('Names des Stockwerks?').replace(/\s/g, "-").toLowerCase();
-
+    removeText();
 	// creating a new SVG Element
 	let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
 	svg.setAttribute('class', floorName);
@@ -390,11 +399,14 @@ function addPolygon(coordinates) {
 }
 
 function addLayerButton(floorname) {
-	let btn = document.createElement('button');
+	const layerBox = document.querySelector('.layerbuttons');
+	console.log(layerBox);
+    let btn = document.createElement('button');
 	btn.innerText = floorname;
 	btn.setAttribute('class', 'switch-layer');
 	document.querySelector('.buttons').append(btn);
 	btn.addEventListener('click', switchLayers);
+    let newel = layerBox.appendChild(btn);
 }
 
 function switchLayers() {

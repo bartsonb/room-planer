@@ -1,0 +1,112 @@
+.toolbar {
+  width: 13.5em;
+  padding: 2%;
+  text-align: center;
+
+
+  input,
+  button {
+    display: none;
+
+    &:checked + label{
+      border-left: 4px solid #605856;
+      border-top: 4px solid #605856;
+      border-bottom: 4px solid #D0CCD0;
+      border-right: 4px solid #D0CCD0;
+      background-color: #90909057;
+    }
+  }
+
+div {
+  margin: 15px auto;
+  background-color: #fff;
+  &:hover {
+    -webkit-filter: invert(100%);
+    filter: invert(100%);
+    _background-color: #000;
+    cursor: pointer;
+    transition: all 0.5s;
+  }
+}
+
+&--button {
+  content: "";
+  width: 60px;
+  height: 60px;
+  margin: 0 auto;
+  display: block;
+  border-right: 4px solid #605856;
+  border-bottom: 4px solid #605856;
+  border-top: 4px solid #D0CCD0;
+  border-left: 4px solid #D0CCD0;
+  position: relative;
+  background-repeat: no-repeat;
+  background-size: 80%;
+  background-position: center;
+
+
+
+  &:active {
+    border: 3px solid pink;
+  }
+
+  &__layer {
+    background-image: url(/img/svg/layer.svg);
+
+  }
+  &__room {
+    background-image: url(/img/svg/room.svg);
+  }
+  &__polygon {
+    background-image: url(/img/svg/polygon.svg);
+  }
+  &__door {
+    background-image: url(/img/svg/door.svg);
+
+    &:after {
+      content: "";
+      display: block;
+      width: 15px;
+      height: 15px;
+      background-image: url(/img/svg/addon.svg);
+      background-size: 80%;
+      background-position: center;
+      background-repeat: no-repeat;
+      position: absolute;
+      right: 5px;
+      top: 5px;
+      background-color: #fff;
+    }
+  }
+  &__window {
+    background-image: url(/img/svg/window.png);
+    &:after {
+      content: "";
+      display: block;
+      width: 15px;
+      height: 15px;
+      background-image: url(/img/svg/addon.svg);
+      background-size: 80%;
+      background-position: center;
+      background-repeat: no-repeat;
+      position: absolute;
+      right: 5px;
+      top: 5px;
+      background-color: #fff;
+    }
+  }
+  &__delete {
+    background-image: url(https://image.flaticon.com/icons/svg/446/446046.svg);
+  }
+}
+
+
+&--buttonLabel {
+  font-size: 18px;
+  text-align: center;
+  width: 100%;
+  display: block;
+  font-weight: 300;
+}
+
+}

@@ -195,7 +195,6 @@ header {
     background-color: #fff;
     height: auto;
     padding: 1em; }
-
 .help--box {
   width: 60%;
   height: 70%;
@@ -212,7 +211,6 @@ header {
         font-family: "Roboto", sans-serif;
         font-size: 1.3rem;
         margin-bottom: 0.5em; }
-
 .help ul {
   list-style-type: none;
   width: 80%;
@@ -220,14 +218,11 @@ header {
   .help ul li {
     font-family: "Roboto", sans-serif;
     font-size: 1.3rem; }
-
 .help h2 {
   text-transform: uppercase; }
-
 .help h5 {
   font-family: 'Overpass Mono', monospace;
   text-transform: uppercase; }
-
 .help--close {
   border: none;
   margin: 0 auto;
@@ -342,3 +337,5 @@ input {
   list-style-type: none; }
   .layerListEntry {
     margin-left: 10px; }
+
+/*# sourceMappingURL=main.css.map */

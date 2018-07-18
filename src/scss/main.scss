@@ -1,3 +1,10 @@
+@import 'components/font';
+@import 'components/skeleton';
+@import 'components/toolbar';
+@import 'components/header';
+@import 'components/helpWrap';
+@import 'components/layerBar.scss';
+
 // COLORS
 $white: white;
 
@@ -9,6 +16,8 @@ $grey-dark: #555;
 $grey-dark-2: #222;
 
 $red: red;
+
+
 
 // IMPORT
 @import url(https://fonts.googleapis.com/css?family=Roboto:300,400,700);
@@ -23,28 +32,14 @@ $red: red;
 body {
 	font-family: "Roboto", sans-serif;
 	user-select: none;
+	background: url(/img/bgPattern.jpg) repeat;
+	background-size: 24%;
 }
 
 main {
-	width: 900px;
-	margin: 50px auto;
+	width: 100%;//eventuell 900px
 }
 
-h1 {
-	padding: 50px 0 20px;
-	text-transform: uppercase;
-	font-weight: 700;
-	font-size: 1.2em;
-
-	span {
-		font-weight: 300;
-	}
-}
-
-.toolbar,
-.buttons {
-	margin: 15px 0;
-}
 
 label {
 	margin: 0 15px 0 0;
@@ -83,9 +78,10 @@ label {
 }
 
 .svg-wrapper {
-	width: 100%;
+	width: 900px;
 	height: 400px;
 	position: relative;
+	margin-top: 15px;
 
 	> svg {
 		position: absolute;

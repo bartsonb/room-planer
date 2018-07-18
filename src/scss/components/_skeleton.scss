@@ -1,0 +1,47 @@
+$border-shadow: #605856;
+$border-light:#D0CCD0;
+
+.contentWrap{
+  display: block;
+
+}
+
+
+main{
+  display: flex;
+  justify-content: space-between;
+}
+
+
+.aufforderung{
+  margin-top: 3em;
+}
+.hasBorder{
+  border:7px solid $border-light;
+  border-bottom-color: $border-shadow ;
+  border-right-color: $border-shadow ;
+  margin:15px;
+  background-color: #fff;
+}
+
+.buttonWrap{
+  position: relative;
+  margin-top: 24px;
+  margin-right: 52px;
+ button,
+  input[type=submit]{
+    border:none;
+    margin: 0 auto;
+    display:block;
+    width:90px;
+    height:40px;
+    background-color:black;
+    border:1px solid #fff;
+    color:#fff;
+    font-size:18px;
+    font-family:'Open Sans';
+    transition:all 0.5s;
+    position: relative;
+  }
+
+}

@@ -1,0 +1,46 @@
+header{
+  height: 9em;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 10px 15px;
+  text-align: center;
+
+  .logo{
+    width: 6em;
+    margin: 15px 30px 0 46px;
+    position: relative;
+    text-shadow: 3px 3px 0 #f00, -4px -2px 0 yellow, -6px -4px 0 blue;
+    img{
+      width:100% ;
+      z-index: 1;
+      position: relative;
+    }
+    svg{
+      position: absolute;
+
+      &#red{
+        position: absolute;
+        left: -2px;
+        top: -2px;
+        fill: red;
+        z-index:0;
+      }
+      &#yellow{
+        position: absolute;
+        left: 2px;
+        top: -2px;
+        fill: yellow;
+        z-index:-0;
+      }
+      &#blue{
+        position: absolute;
+        left: -2px;
+        top: 2px;
+        fill: blue;
+        z-index:0;
+      }
+    }
+  }
+
+}
