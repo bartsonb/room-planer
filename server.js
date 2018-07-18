@@ -21,7 +21,10 @@ app.post('/post', function(req, res) {
 	// 	res.send(data);
 	// });
 
-	res.send(req.body);
+	console.log(req.body.rooms);
+	console.log(req.body.floors);
+
+	// res.send(JSON.stringify(req.body, null, 2));
 	res.end();
 });
 

@@ -20,6 +20,7 @@ let DOM = {
 
 // GLOBALS
 let gridSize = 20;
+let divider = 400;
 let mode;
 let tool;
 
@@ -62,23 +63,18 @@ let room = {
 		return Math.abs(this.p2.y - this.p1.y);
 	},
 	size: function () {
-		return this.width() * this.height() / 400;
+		return (this.width() * this.height()) / divider;
 	},
 	polySize: function() {
-		let total = 0;
-		for ( let i = 0; i < this.polygon.length / 2 - 1; i++ ) {
-			let P1X = this.polygon[i];
-			let P1Y = this.polygon[i + 1];
-			let P2X = this.polygon[i + 2];
-			let P2Y = this.polygon[i + 3];
+		let a = 0;
+		let y = this.polygon.filter(function(el, i) { return i % 2 === 1 });
+		let x = this.polygon.filter(function(el, i) { return i % 2 === 0 });
+		let n = Math.min(x.length, y.length);
 
-			if (P1X < P2X && P1Y === P2Y) { total += Math.abs(P1X - P2X); }
-			if (P1X > P2X && P1Y === P2Y) { total += Math.abs(P1X - P2X); }
-
-			if (P1X === P2X && P1Y < P2Y) { total += Math.abs(P1Y - P2Y); }
-			if (P1X === P2X && P1Y > P2Y) { total += Math.abs(P1Y - P2Y); }
+		for (let i = 0; i < n; i++) {
+			a += (y[i] + y[(i+1) % n]) * (x[i] - x[(i+1) % n]);
 		}
-		return total / 20;
+		return Math.abs(a / 2) / divider;
 	},
 	isValid: function()  {
 		return this.width() !== 0 && this.height() !== 0;
@@ -383,10 +379,11 @@ function addPolygon(coordinates) {
 	sizeElement = floors[room.floor].snap.text(room.polygon[0] + 5, room.polygon[1] + 28, room.polySize() + "qm").attr({class: 'size'});
 
 	floors[room.floor].snap.g(roomElement, descElement, sizeElement).attr({id: rooms.length});
-	room.polygon = [];
 
 	// pusing deep copy of room into rooms array
 	rooms.push( $.extend(true, {}, room) );
+
+	room.polygon = [];
 
 	// update layerlist
 	updateLayerList();
