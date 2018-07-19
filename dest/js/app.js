@@ -312,39 +312,55 @@ function drawroom(action, pos) {
 }
 
 function isSide(room, pos, direction) {
-	switch (direction) {
-		case "top-left-bottom-right":
-			if (pos.x > room.p1.x && pos.x < room.p2.x && ( pos.y === room.p1.y || pos.y === room.p2.y ) ) { return "vertical" }
-			if (pos.y > room.p1.y && pos.y < room.p2.y && ( pos.x === room.p1.x || pos.x === room.p2.x ) ) { return "horizontal"; }
-			break;
+	if (direction) {
+		switch (direction) {
+			case "top-left-bottom-right":
+				if (pos.x > room.p1.x && pos.x < room.p2.x && ( pos.y === room.p1.y || pos.y === room.p2.y ) ) { return "horizontal" }
+				if (pos.y > room.p1.y && pos.y < room.p2.y && ( pos.x === room.p1.x || pos.x === room.p2.x ) ) { return "vertical"; }
+				break;
 
-		case "bottom-right-top-left":
-			if (pos.x < room.p1.x && pos.x > room.p2.x && ( pos.y === room.p1.y || pos.y === room.p2.y ) ) { return "vertical" }
-			if (pos.y < room.p1.y && pos.y > room.p2.y && ( pos.x === room.p1.x || pos.x === room.p2.x ) ) { return "horizontal"; }
-			break;
+			case "bottom-right-top-left":
+				if (pos.x < room.p1.x && pos.x > room.p2.x && ( pos.y === room.p1.y || pos.y === room.p2.y ) ) { return "horizontal" }
+				if (pos.y < room.p1.y && pos.y > room.p2.y && ( pos.x === room.p1.x || pos.x === room.p2.x ) ) { return "vertical"; }
+				break;
 
-		case "top-right-bottom-left":
-			if (pos.x < room.p1.x && pos.x > room.p2.x && ( pos.y === room.p1.y || pos.y === room.p2.y ) ) { return "vertical" }
-			if (pos.y > room.p1.y && pos.y < room.p2.y && ( pos.x === room.p1.x || pos.x === room.p2.x ) ) { return "horizontal"; }
-			break;
+			case "top-right-bottom-left":
+				if (pos.x < room.p1.x && pos.x > room.p2.x && ( pos.y === room.p1.y || pos.y === room.p2.y ) ) { return "horizontal" }
+				if (pos.y > room.p1.y && pos.y < room.p2.y && ( pos.x === room.p1.x || pos.x === room.p2.x ) ) { return "vertical"; }
+				break;
 
-		case "bottom-left-top-right":
-			if (pos.x > room.p1.x && pos.x < room.p2.x && ( pos.y === room.p1.y || pos.y === room.p2.y ) ) { return "vertical" }
-			if (pos.y < room.p1.y && pos.y > room.p2.y && ( pos.x === room.p1.x || pos.x === room.p2.x ) ) { return "horizontal"; }
-			break;
+			case "bottom-left-top-right":
+				if (pos.x > room.p1.x && pos.x < room.p2.x && ( pos.y === room.p1.y || pos.y === room.p2.y ) ) { return "horizontal" }
+				if (pos.y < room.p1.y && pos.y > room.p2.y && ( pos.x === room.p1.x || pos.x === room.p2.x ) ) { return "vertical"; }
+				break;
+		}
+	}
+
+	if (!direction) {
+		let y = room.polygon.filter(function(el, i) { return i % 2 === 1 });
+		let x = room.polygon.filter(function(el, i) { return i % 2 === 0 });
+		let n = Math.min(x.length, y.length);
+
+		for ( let i = 0; i < n; i++) {
+			if ((pos.x > x[i] && pos.x < x[i+1]) && ( pos.y === y[i] || pos.y === y[i+1] )) { return "horizontal" }
+			if ((pos.y > y[i] && pos.y < y[i+1]) && ( pos.x === x[i] || pos.x === x[i+1] )) { return "vertical" }
+
+			if ((pos.x < x[i] && pos.x > x[i+1]) && ( pos.y === y[i] || pos.y === y[i+1] )) { return "horizontal" }
+			if ((pos.y < y[i] && pos.y > y[i+1]) && ( pos.x === x[i] || pos.x === x[i+1] )) { return "vertical" }
+		}
 	}
 
 	return false;
 }
 
 function addDoor(pos, room, rotation) {
-	if (rotation === "vertical") { room.doors += 1; floors[room.floor].snap.rect(pos.x - 5, pos.y - 3, 10, 6).addClass('door'); }
-	if (rotation === "horizontal") { room.doors += 1; floors[room.floor].snap.rect(pos.x - 5, pos.y - 3, 10, 6).addClass('door').transform('r90'); }
+	if (rotation === "vertical") { room.doors += 1; floors[room.floor].snap.rect(pos.x - 5, pos.y - 3, 10, 6).addClass('door').transform('r90'); }
+	if (rotation === "horizontal") { room.doors += 1; floors[room.floor].snap.rect(pos.x - 5, pos.y - 3, 10, 6).addClass('door'); }
 }
 
 function addWindow(pos, room, rotation) {
-	if (rotation === "vertical") { room.windows += 1; floors[room.floor].snap.rect(pos.x - 5, pos.y - 3, 10, 6).addClass('window'); }
-	if (rotation === "horizontal") { room.windows += 1; floors[room.floor].snap.rect(pos.x - 5, pos.y - 3, 10, 6).addClass('window').transform('r90'); }
+	if (rotation === "vertical") { room.windows += 1; floors[room.floor].snap.rect(pos.x - 5, pos.y - 3, 10, 6).addClass('window').transform('r90'); }
+	if (rotation === "horizontal") { room.windows += 1; floors[room.floor].snap.rect(pos.x - 5, pos.y - 3, 10, 6).addClass('window'); }
 }
 
 function addRoom(direction) {
@@ -398,6 +414,8 @@ function addPolygon(coordinates) {
 	sizeElement = floors[room.floor].snap.text(room.polygon[0] + 5, room.polygon[1] + 28, room.polySize() + "qm").attr({class: 'size'});
 
 	floors[room.floor].snap.g(roomElement, descElement, sizeElement).attr({id: rooms.length});
+	room.direction = undefined;
+	room.qm = room.polySize();
 
 	// pusing deep copy of room into rooms array
 	rooms.push( $.extend(true, {}, room) );
@@ -434,8 +452,8 @@ function switchLayers() {
 	let svgs = document.querySelectorAll('svg');
 	let btnText = event.target.innerText;
 
-	svgs.forEach( svg => svg.style.zIndex = "0" );
 	svgs.forEach( svg => {
+		svg.style.zIndex = "0";
 		if ( svg.getAttribute('class') === btnText ) { svg.style.zIndex = "100"; }
 	});
 }
